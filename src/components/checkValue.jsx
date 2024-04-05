@@ -21,9 +21,11 @@ const checkValue = (value) => {
     }
   }
 
+  let power;
   for (let i = 1; i < 15; i ++) {
     if (Math.pow(2, i) == String(value).length) {
       errorType2 = 0;
+      power = i;
     }
   }
 
@@ -37,7 +39,7 @@ const checkValue = (value) => {
       <div className={hasErrors ? 'Error' : 'none'}>
         {errorType1 ? <p>Используйте только 1 или 0 в своей записи</p> : ''}
         {errorType0 ? '' : (errorType2 ? <p>У вас должно быть значений 2&#x207F;, где n>0</p> : '')}
-        {errorType0 ? '' : (hasErrors ? '': generalAlgorithm(value))}
+        {errorType0 ? '' : (hasErrors ? '': generalAlgorithm(value, power))}
       </div>
     </div>
   )

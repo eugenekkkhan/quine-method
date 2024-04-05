@@ -7,14 +7,11 @@
   pointer-events: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.top-padding {
+  padding-top: 6rem;
 }
 
 .main {
-  padding-top: 6rem;
   padding-left: 4rem;
   padding-right: 4rem;
   display: flex;
@@ -26,15 +23,19 @@
 }
 
 .nav {
-
-  padding-top: 2rem;
-  padding-bottom: 4rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
   padding-left: 4rem;
   padding-right: 4rem;
+
   position: fixed;
   display: flex;
   align-items: center;
-  justify-content: center;
+
+  width: 100vw;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  backdrop-filter: blur(5px);
 
 }
 
@@ -46,7 +47,7 @@
 }
 
 .Error {
-  width: 50%;
+  padding: 1rem;
   border-radius: 0.5rem;
   border-color: darkred;
   border: 0.1rem solid;
@@ -59,3 +60,18 @@
   color: #61dafb;
 }
 
+.table {
+  display: flex;
+  flex-direction: column;
+  flex: 2 2 10%;
+  border-color: black;
+  border: 0.05rem solid;
+}
+
+.cell {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border: 0.05rem solid;
+}
