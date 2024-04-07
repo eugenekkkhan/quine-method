@@ -38,7 +38,7 @@ const checkValue = (value) => {
     <div className='container'>
       <div className={hasErrors ? 'Error' : 'none'}>
         {errorType1 ? <p>Используйте только 1 или 0 в своей записи</p> : ''}
-        {errorType0 ? '' : (errorType2 ? <p>У вас должно быть значений 2&#x207F;, где n>0</p> : '')}
+        {errorType0 ? '' : (errorType2 ? <p>У вас должно быть значений 2&#x207F;, где n>0</p> : '')}    
         {errorType0 ? '' : (hasErrors ? '': generalAlgorithm(value, power))}
       </div>
     </div>
