@@ -1,5 +1,7 @@
 import { hover } from '@testing-library/user-event/dist/hover';
 import React from 'react'
+import Latex from 'react-latex-next';
+import 'katex/dist/katex.min.css';
 
 const generalAlgorithm = (value, power) => {
   let arrayValues = new Array(); 
@@ -48,21 +50,22 @@ const generalAlgorithm = (value, power) => {
       for (let j = 0; j < power; j++) {
 
         if (xValuesArrayFOne[i][j] == 1) {
-          localStr += "x"+ j;
+          localStr += " x_"+ j;
         } else {
-          localStr += "¬" + "x" + j;
+          localStr += "\\overline" + " x_" + j;
         }
         if (j < power-1) {
-          localStr += "∧"
+          localStr += "\\land"
         }
       }
       str += "("+localStr+")";
       if (i < xValuesArrayFOne.length - 1) {
-        str+=" ∨ ";
+        str+=" \\lor \\newline";
       }
     }
     return str;
   }
+
 
   return (
     <div className='container'>
@@ -82,10 +85,12 @@ const generalAlgorithm = (value, power) => {
       <div className='actions'>
           <div className="divSDNF">СДНФ:</div>
           <div className='hidden-1'>Совершенная дизъюнктивная нормальная форма</div>
-          F={
-            SDNF(xValuesArrayFOne)
-          }
+          <Latex displayMode={true}>$F={SDNF(xValuesArrayFOne)}$
+          </Latex>
 
+          <div className='gluing'>Склеивание:</div>
+          <div className='hidden-2'>Мы выносим за скобки</div>
+          <Latex displayMode={true}>$I^9=245^1$</Latex>
       </div>
     </div>
   )
