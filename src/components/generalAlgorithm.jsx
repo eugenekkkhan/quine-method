@@ -4,6 +4,7 @@ import React from 'react'
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
 
+
 const generalAlgorithm = (value, power) => {
   let arrayValues = new Array(); 
   let len = value.length;
@@ -40,7 +41,11 @@ const generalAlgorithm = (value, power) => {
   let xValuesArrayFOne = []
   for (let i = 0; i < len; i++) {
     if(value[i] == 1) {
-      xValuesArrayFOne.push(xValuesArray[i]);
+      let arr = [];
+      for (let j = 0; j < xValuesArray[i].length; j++){
+        arr.push(xValuesArray[i][j])
+      }
+      xValuesArrayFOne.push(arr);
     }
   }
   function outputSDNF(inputArr) {
@@ -69,59 +74,154 @@ const generalAlgorithm = (value, power) => {
     return str;
   }
 
+  function formatArray(arr) {
+    const filtered = arr.filter(item => item != "2");
+    return filtered.join("");
+  }
+
   function outputADNF(inputArr) {
     var str = '';
     for (let i = 0; i < inputArr.length; i++) {
       var localStr = '';
-      for (let j = 0; j < inputArr[i].length; j++) {
-
-        if (inputArr[i][j] != '2') {
-            if (inputArr[i][j] == '1') {
-              localStr += " x_"+ j;
-            } else {
-              localStr += "\\overline" + " x_" + j;
-            }
+      var formatted = formatArray(inputArr[i]);
+      let k = 0;
+      let cIndex = 0; // conjucnction index
+      while (cIndex != formatted.length) {
+        if (inputArr[i][k]=="2") {
+          k++;
+        } else {
+          if (inputArr[i][k]=="1") {
+            localStr += " x_"+k;
+          } else {
+            localStr += "\\overline x_"+k;
+          }
+          k++;
+          cIndex++;
         }
-
-      }
+        if (cIndex != 0 && cIndex != formatted.length && inputArr[i][k] != "2") {
+          localStr += "\\land";
+        }
+      }    
+      
       str += "("+localStr+")";
       if (i < inputArr.length - 1) {
         str+=" \\lor \\newline";
       }
-      console.log(str);
+      
     }
+
     return str;
   }
 
-  function bracketing(a, b) {
-    let counter = 0
-    let index = -1;
-    let newValue;
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] != b[i]) {
-        counter++;
-        index = i;
+  function Gluing(a, b) {
+    let result = '';
+    let found = -1;
+    let kol = 0, i = 0;
+    while ((kol < 2) && (i < a.length)) {
+      if ((a[i] !== b[i])) {
+        kol++;
+        found = i;
       }
+      i++;
     }
-    if (counter == 1) {
-      newValue = a;
-      newValue[index] = '2';
-      return newValue;
-    } else {
-      return -1;
+    if (kol === 1) {
+      result = a;
+      result[found] = "2";
     }
-  }
-
-  let newArray = []
-  for (let i = 0; i < xValuesArrayFOne.length-1; i++) {
-    for (let j = i+1; j < xValuesArrayFOne.length; j++) {
-      let arrayElement = bracketing(xValuesArrayFOne[i],xValuesArrayFOne[j]);
-      if (arrayElement !== -1) {
-        newArray.push(arrayElement);
-      }
-    } 
+    return result;
   }
   
+  function Absorption(a, b) {
+    let result = [];
+    let found = -1;
+    let amount = 0, i = 0;
+    while ((amount < 2) && (i < a.length)) {
+      if (((a[i] == "2") && (b[i] != "2")) || ((b[i] == "2") && (a[i] != "2"))) {
+        amount++;
+        found = i;
+      } else if ((a[i] != "2") && (b[i] != "2") && (a[i] != b[i])) {
+        return result;
+      }
+      i++;
+    }
+    if (amount === 1) {
+      result = a;
+      result[found] = "2";
+    }
+    return result;
+  }
+  
+  // [[[1,0,0], false], [[1,0,0], false]]
+  function Abbreviate(data, function_) {
+    while (true) {
+      let h = [];
+      let flag = false;
+      for (let i = 0; i < data.length; i++) {
+        for (let j = i + 1; j < data.length; j++) {
+          if (i != j) {
+            let buf = function_(data[i][0], data[j][0]);
+            if (buf != []) {
+              data[i][1] = true;
+              data[j][1] = true;
+              flag = true;
+              let object = [buf, false];
+              let X3 = false;
+              for (let x of h) {
+                if (x[0] === object[0]) {
+                  X3 = true;
+                  break;
+                }
+              }
+              if (!X3) {
+                h.push(object);
+              }
+            }
+          }
+        }
+        if (!data[i][1]) {
+          let X3 = false;
+          for (let x of h) {
+            if (x[0] === data[i][0]) {
+              X3 = true;
+              break;
+            }
+          }
+          if (!X3) {
+            h.push([data[i][0], data[i][1]]);
+          }
+        }
+      }
+      if (!flag) {
+        break;
+      }
+      data = h;
+    }
+    return data;
+  }
+
+  let abbreviatedArray = [];
+
+  for (let i = 0; i < xValuesArrayFOne.length; i++) {
+    let localArr = [];
+    for (let j = 0; j < xValuesArrayFOne[i].length; j++) {
+      localArr.push(xValuesArrayFOne[i][j]);
+    }
+    abbreviatedArray.push([localArr, false])
+  }
+
+  function Abbreviated_dnf(data)
+  {
+    data = Abbreviate(data, Gluing);
+
+
+    let arr = [];
+    for (let i = 0; i < data.length; i++) {
+      arr.push(data[i][0]);
+    }
+    return arr;
+  }
+
+  console.log(xValuesArrayFOne);
 
   return (
     <div className='container'>
@@ -149,7 +249,10 @@ const generalAlgorithm = (value, power) => {
 
           <div className='gluing'>Склеивание:</div>
           <div className='hidden-2'>Мы выносим за скобки элементарные конъюнкции, которые отличаются всего на одно значение, чтобы сократить этот отличный элемент. Данный процесс называется склеиванием</div>
-          <Latex>$f={outputADNF(newArray)}$</Latex>
+          <Latex>$f={outputADNF(Abbreviated_dnf(abbreviatedArray))}$</Latex>
+
+          <div className='warn'>{}</div>
+
       </div>
     </div>
   )

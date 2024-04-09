@@ -110,4 +110,41 @@ function Owns(A, B) {
     return data;
   }
 
+// import React from 'react'
+
+// function formatArray(arr, specialSymbol = "*") {
+//     const filtered = arr.filter(item => item != "2");
+//     return filtered.join(specialSymbol);
+// }
+
+// let array = [[1,2,1],[2,1,0],[0,1,2]];
+
+// const removedStrings = () => {
+//   return (
+//     <div>
+//         <div className='warn'>{array.join(" ")}</div>
+//         <div>{formatArray(array[0])}</div>
+//     </div>
+//   )
+// }
+
+// export default removedStrings
   
+function bracketing(a, b) {
+    let counter = 0
+    let index = -1;
+    let newValue;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) {
+        counter++;
+        index = i;
+      }
+    }
+    if (counter === 1) {
+      newValue = a;
+      newValue[index] = '2';
+      return newValue;
+    } else {
+      return -1;
+    }
+  }
