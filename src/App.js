@@ -13,16 +13,20 @@ function App() {
         <p className='light-green'>Online</p>
       </nav>
       <div className='main top-padding'>
-        <p>
-          Введите вектор функции:
-        </p>
+        <p className='bold'>
+            Введите вектор функции:
+          </p>
+      </div>
+      <div className='main'>
+        <p>f = (</p>
         <input 
-          placeholder='Например: 11100011'
+          placeholder='00101111'
           value={name}
           onChange={event => {
             setName(event.target.value);
           }}
         />
+        <p>)</p>
       </div>
       <div className='main'>
         {checkValue(name)}

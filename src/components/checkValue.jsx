@@ -1,6 +1,7 @@
 import React from 'react'
 import generalAlgorithm from './generalAlgorithm';
 
+
 const checkValue = (value) => {
   //empty string error
   let errorType0 = 0;
