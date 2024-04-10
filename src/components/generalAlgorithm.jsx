@@ -3,7 +3,9 @@ import { hover } from '@testing-library/user-event/dist/hover';
 import React from 'react'
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
+import Logo from '../logo.svg'
 
+const _ = require('lodash');
 
 const generalAlgorithm = (value, power) => {
   let arrayValues = new Array(); 
@@ -33,9 +35,9 @@ const generalAlgorithm = (value, power) => {
     xValuesArray.push(decimalToBinaryArray(i));
   }
 
-  var topSigns = [];
+  var topSigns1 = [];
   for (let i = 0; i < power; i++) {
-    topSigns.push(`${i}`)
+    topSigns1.push(`${i}`)
   }
 
   let xValuesArrayFOne = []
@@ -114,91 +116,101 @@ const generalAlgorithm = (value, power) => {
   }
 
   function Gluing(a, b) {
+    let aCopy = _.cloneDeep(a);
+    let bCopy = _.cloneDeep(b);
     let result = '';
     let found = -1;
-    let kol = 0, i = 0;
-    while ((kol < 2) && (i < a.length)) {
-      if ((a[i] !== b[i])) {
-        kol++;
+    let amount = 0, i = 0;
+    while ((amount < 2) && (i < a.length)) {
+      if ((aCopy[i] !== bCopy[i])) {
+        amount++;
         found = i;
       }
       i++;
     }
-    if (kol === 1) {
-      result = a;
+    if (amount === 1) {
+      result = aCopy;
       result[found] = "2";
     }
     return result;
   }
-  
   function Absorption(a, b) {
     let result = [];
-    let found = -1;
-    let amount = 0, i = 0;
-    while ((amount < 2) && (i < a.length)) {
-      if (((a[i] == "2") && (b[i] != "2")) || ((b[i] == "2") && (a[i] != "2"))) {
+    let found;
+    let amount = 0; 
+    let i = 0;
+
+    let aCopy = _.cloneDeep(a);
+    let bCopy = _.cloneDeep(b)
+
+    while ((amount < 2) && (i < aCopy.length)) {
+      if (((aCopy[i] == "2") && (bCopy[i] != "2")) || ((bCopy[i] == "2") && (aCopy[i] != "2"))) {
         amount++;
         found = i;
-      } else if ((a[i] != "2") && (b[i] != "2") && (a[i] != b[i])) {
+      } else if ((aCopy[i] != "2") && (bCopy[i] != "2") && (aCopy[i] != bCopy[i])) {
         return result;
       }
       i++;
     }
     if (amount === 1) {
-      result = a;
+      result = aCopy;
       result[found] = "2";
     }
     return result;
   }
   
+
   // [[[1,0,0], false], [[1,0,0], false]]
-  function Abbreviate(data, function_) {
+  function Abbreviate(data, func) {
+    let dataCopy = _.cloneDeep(data);
     while (true) {
+      
       let h = [];
       let flag = false;
-      for (let i = 0; i < data.length; i++) {
-        for (let j = i + 1; j < data.length; j++) {
-          if (i != j) {
-            let buf = function_(data[i][0], data[j][0]);
+      for (let i = 0; i < dataCopy.length; i++) {
+        
+        for (let j = i + 1; j < dataCopy.length; j++) {
+            let buf = func(dataCopy[i][0], dataCopy[j][0]);
             if (buf != []) {
-              data[i][1] = true;
-              data[j][1] = true;
+              dataCopy[i][1] = true;
+              dataCopy[j][1] = true;
               flag = true;
               let object = [buf, false];
-              let X3 = false;
+              let repeats = false;
               for (let x of h) {
+                console.log([x[0],object[0]])
                 if (x[0] === object[0]) {
-                  X3 = true;
-                  break;
+                  
+                  repeats = true;
+                  // break;
                 }
               }
-              if (!X3) {
+              if (!repeats) {
                 h.push(object);
               }
-            }
           }
         }
-        if (!data[i][1]) {
-          let X3 = false;
+        if (!dataCopy[i][1]) {
+          let repeats = false;
           for (let x of h) {
-            if (x[0] === data[i][0]) {
-              X3 = true;
+            if (x[0] === dataCopy[i][0]) {
+              repeats = true;
               break;
             }
           }
-          if (!X3) {
-            h.push([data[i][0], data[i][1]]);
+          if (!repeats) {
+            h.push([dataCopy[i][0], dataCopy[i][1]]);
           }
         }
       }
       if (!flag) {
         break;
       }
-      data = h;
+      dataCopy = h;
     }
-    return data;
+    return dataCopy;
   }
-
+//1110001000000011
   let abbreviatedArray = [];
 
   for (let i = 0; i < xValuesArrayFOne.length; i++) {
@@ -209,32 +221,84 @@ const generalAlgorithm = (value, power) => {
     abbreviatedArray.push([localArr, false])
   }
 
-  function Abbreviated_dnf(data)
+  function Abbreviated_dnf(data2)
   {
 
-    data = Abbreviate(data, Gluing);
-    
+    data2 = Abbreviate(data2, Gluing);
 
+    
     let arr = [];
-    for (let i = 0; i < data.length; i++) {
-      arr.push(data[i][0]);
+    for (let i = 0; i < data2.length; i++) {
+      arr.push(data2[i][0]);
     }
     return arr;
   }
 
-  console.log(xValuesArrayFOne);
+
+
+  let postAbbreviatedArray = Abbreviated_dnf(abbreviatedArray);
+
+  let topSigns2 = [];
+
+  for (let i = 0; i < xValuesArray.length; i++) {
+    let localStr = "";
+    for (let j = 0; j < xValuesArray[i].length; j++) {
+      if (xValuesArray[i][j] == "1") {
+        if (j == xValuesArray[i].length-1) {
+          localStr += "x_"+j;
+        } else {
+          localStr += "x_"+j +"\\land ";
+        }
+      } else {
+        if (j == xValuesArray[i].length-1) {
+          localStr += "\\overline x_"+j;
+        } else {
+          localStr += "\\overline x_"+j +"\\land ";
+        }
+      }
+
+    }
+    topSigns2.push(localStr)
+  }
+
+  let leftSigns2 = [];
+
+  for (let i = 0; i < postAbbreviatedArray.length; i++) {
+    var localStr = '';
+    var formatted = formatArray(postAbbreviatedArray[i]);
+    let k = 0;
+    let cIndex = 0; // conjucnction index
+    while (cIndex != formatted.length) {
+      if (postAbbreviatedArray[i][k]=="2") {
+        k++;
+      } else {
+        if (postAbbreviatedArray[i][k]=="1") {
+          localStr += " x_"+k;
+        } else {
+          localStr += "\\overline x_"+k;
+        }
+        k++;
+        cIndex++;
+      }
+      if (cIndex != 0 && cIndex != formatted.length && postAbbreviatedArray[i][k] != "2") {
+        localStr += "\\land";
+      }
+    } 
+    leftSigns2.push(localStr)
+  }
 
   return (
-    <div className='container'>
+  <div className='container'>
+    <div className='flex-2-div'>
       <div className='tablewrapper'>
         <div className='table'>
           <tr>
-            <td className='cell'>&nbsp;</td>
-            {topSigns.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
+            <td className='cell-fixed'>&nbsp;</td>
+            {topSigns1.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
             <td className='cell'>f</td>
           </tr>
           {xValuesArray.map((innerArray, index) => {
-            return <tr><td className='cell'>{index+1}</td>{innerArray.map(element => <td className={(element == 1) ? 'cell green-bg' : 'cell red-bg'}>{element}</td>)} <td className={(value[index]==1) ? 'cell green-bg' : 'cell red-bg'}>{value[index]}</td></tr>
+            return <tr><td className='cell-fixed'>{index+1}</td>{innerArray.map(element => <td className={(element == 1) ? 'cell green-bg' : 'cell red-bg'}>{element}</td>)} <td className={(value[index]==1) ? 'cell green-bg' : 'cell red-bg'}>{value[index]}</td></tr>
           })}
           
         </div>
@@ -248,14 +312,36 @@ const generalAlgorithm = (value, power) => {
             </Latex>
           </div>
 
-          <div className='gluing'>Склеивание:</div>
-          <div className='hidden-2'>Мы выносим за скобки элементарные конъюнкции, которые отличаются всего на одно значение, чтобы сократить этот отличный элемент. Данный процесс называется склеиванием</div>
-          <Latex>$f={outputADNF(Abbreviated_dnf(abbreviatedArray))}$</Latex>
-
-          <div className='warn'>{}</div>
+          <div className='gluing'>Сокращенная ДНФ:</div>
+          <div className='hidden-2'>Пример для вектора 00101111 находится в справке</div>
+          <Latex>$f={outputADNF(postAbbreviatedArray)}$</Latex>
 
       </div>
     </div>
+
+    <br/>
+
+    <div className='matrix-outer'>
+      <div className='matrix'>
+          <tr>
+            <td className='cell2'>&nbsp;</td>
+            {topSigns2.map(element => <td className='cell2'><Latex>${element}$</Latex></td>)}
+            <td className='cell-fixed'>f</td>
+          </tr>
+            {leftSigns2.map((element) => {
+            return <tr>
+              <td className='cell'><Latex>${element}$</Latex></td>
+
+            </tr>})}
+        </div>
+      </div>
+
+
+      <div>{postAbbreviatedArray.join('|')}</div>
+      <div>{xValuesArrayFOne.join('|')}</div>
+  </div>
+
+
   )
 }
 

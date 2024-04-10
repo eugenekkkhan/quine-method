@@ -9,8 +9,15 @@ function App() {
     <div className="App">
 
       <nav className="nav">
-        <p className='bold dark-green'>Quine</p>
-        <p className='light-green'>Online</p>
+        <div className='left-nav'>
+          <p className='bold dark-green'>Quine</p>
+          <p className='light-green'>Online</p>
+        </div>
+        <div className='right-nav'>
+          <p className='light-green'>
+            Справка
+          </p>
+        </div>
       </nav>
       <div className='main top-padding'>
         <p className='bold'>
@@ -28,7 +35,7 @@ function App() {
         />
         <p>)</p>
       </div>
-      <div className='main'>
+      <div>
         {checkValue(name)}
       </div>
 
