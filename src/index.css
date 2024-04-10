@@ -29,3 +29,18 @@ input {
 .warn {
   color: red;
 }
+
+.lower-index-size {
+  font-size: 50%;
+  font-weight: 400;
+}
+
+.divSDNF:hover +.hidden-1, .divSDNF:active + .hidden-1 {
+  display: block;
+  color:rgb(141, 141, 141);
+}
+
+.gluing:hover +.hidden-2, .divSDNF:active + .hidden-2 {
+  display: block;
+  color:rgb(141, 141, 141);
+}
