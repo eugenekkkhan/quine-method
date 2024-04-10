@@ -211,8 +211,9 @@ const generalAlgorithm = (value, power) => {
 
   function Abbreviated_dnf(data)
   {
-    data = Abbreviate(data, Gluing);
 
+    data = Abbreviate(data, Gluing);
+    
 
     let arr = [];
     for (let i = 0; i < data.length; i++) {
