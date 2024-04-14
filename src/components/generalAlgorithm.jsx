@@ -134,33 +134,7 @@ const generalAlgorithm = (value, power) => {
     }
     return result;
   }
-  function Absorption(a, b) {
-    let result = [];
-    let found;
-    let amount = 0; 
-    let i = 0;
-
-    let aCopy = _.cloneDeep(a);
-    let bCopy = _.cloneDeep(b)
-
-    while ((amount < 2) && (i < aCopy.length)) {
-      if (((aCopy[i] == "2") && (bCopy[i] != "2")) || ((bCopy[i] == "2") && (aCopy[i] != "2"))) {
-        amount++;
-        found = i;
-      } else if ((aCopy[i] != "2") && (bCopy[i] != "2") && (aCopy[i] != bCopy[i])) {
-        return result;
-      }
-      i++;
-    }
-    if (amount === 1) {
-      result = aCopy;
-      result[found] = "2";
-    }
-    return result;
-  }
   
-
-  // [[[1,0,0], false], [[1,0,0], false]]
   function Abbreviate(data, func) {
     let dataCopy = _.cloneDeep(data);
     while (true) {
@@ -179,10 +153,8 @@ const generalAlgorithm = (value, power) => {
               let repeats = false;
               for (let x of h) {
                 console.log([x[0],object[0]])
-                if (x[0] === object[0]) {
-                  
+                if (JSON.stringify(x[0]) === JSON.stringify(object[0])) {
                   repeats = true;
-                  // break;
                 }
               }
               if (!repeats) {
@@ -193,7 +165,7 @@ const generalAlgorithm = (value, power) => {
         if (!dataCopy[i][1]) {
           let repeats = false;
           for (let x of h) {
-            if (x[0] === dataCopy[i][0]) {
+            if (JSON.stringify(x[0]) === JSON.stringify(dataCopy[i][0])) {
               repeats = true;
               break;
             }
@@ -210,7 +182,7 @@ const generalAlgorithm = (value, power) => {
     }
     return dataCopy;
   }
-//1110001000000011
+
   let abbreviatedArray = [];
 
   for (let i = 0; i < xValuesArrayFOne.length; i++) {
@@ -240,17 +212,17 @@ const generalAlgorithm = (value, power) => {
 
   let topSigns2 = [];
 
-  for (let i = 0; i < xValuesArray.length; i++) {
+  for (let i = 0; i < xValuesArrayFOne.length; i++) {
     let localStr = "";
-    for (let j = 0; j < xValuesArray[i].length; j++) {
-      if (xValuesArray[i][j] == "1") {
-        if (j == xValuesArray[i].length-1) {
+    for (let j = 0; j < xValuesArrayFOne[i].length; j++) {
+      if (xValuesArrayFOne[i][j] == "1") {
+        if (j == xValuesArrayFOne[i].length-1) {
           localStr += "x_"+j;
         } else {
           localStr += "x_"+j +"\\land ";
         }
       } else {
-        if (j == xValuesArray[i].length-1) {
+        if (j == xValuesArrayFOne[i].length-1) {
           localStr += "\\overline x_"+j;
         } else {
           localStr += "\\overline x_"+j +"\\land ";
@@ -285,6 +257,22 @@ const generalAlgorithm = (value, power) => {
       }
     } 
     leftSigns2.push(localStr)
+  }
+
+  function overLap(array1, array2) {
+    let crossedMatrix = [];
+    for (let i = 0; i < array1.length; i++) {
+      crossedMatrix.push([]);
+      for (let j = 0; j < array2.length; j++) {
+        console.log(array1[i]);
+        if (array1[i].toString().includes(array2[j].toString())) {
+          crossedMatrix[i].push('\\times')
+        } else {
+          crossedMatrix[i].push('&nbsp;');
+        }
+      }
+    }
+    return crossedMatrix.join('|||');
   }
 
   return (
@@ -324,20 +312,19 @@ const generalAlgorithm = (value, power) => {
     <div className='matrix-outer'>
       <div className='matrix'>
           <tr>
-            <td className='cell2'>&nbsp;</td>
-            {topSigns2.map(element => <td className='cell2'><Latex>${element}$</Latex></td>)}
-            <td className='cell-fixed'>f</td>
+            <td className='cell'>&nbsp;</td>
+            {topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
           </tr>
             {leftSigns2.map((element) => {
             return <tr>
               <td className='cell'><Latex>${element}$</Latex></td>
-
-            </tr>})}
+              {topSigns2.map(element => <td className='cell'><Latex>$\times$</Latex></td>)}
+              </tr>})}
         </div>
       </div>
 
 
-      <div>{postAbbreviatedArray.join('|')}</div>
+      <div>{overLap(xValuesArrayFOne, postAbbreviatedArray)}</div>
       <div>{xValuesArrayFOne.join('|')}</div>
   </div>
 
