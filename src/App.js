@@ -1,6 +1,6 @@
 import './App.css';
 import React from 'react';
-import checkValue from './components/checkValue';
+import CheckValue from './components/checkValue';
 
 function App() {
   const [name, setName] = React.useState('');
@@ -36,7 +36,7 @@ function App() {
         <p>)</p>
       </div>
       <div>
-        {checkValue(name)}
+        <CheckValue value={name}/>
       </div>
 
     </div>
