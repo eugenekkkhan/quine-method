@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Latex from 'react-latex-next';
+import Legend from './legend';
 
 const _ = require('lodash');
 
@@ -29,7 +30,7 @@ const ImplicationMatrix = (props) => {
     } else {
       return 0;
     }
-  }
+  };
 
 
   for (let i = 0; i < aXOneValues.length; i++) {
@@ -37,11 +38,27 @@ const ImplicationMatrix = (props) => {
     for (let j = 0; j < xOneValues.length; j++) {
       matrixData[i][j] = [equalityCheck(xOneValues[j], aXOneValues[i]),0,0];
     }
-  }
+  };
 
 
   const [matrix, setMatrix] = useState(matrixData);
   const [method, setMethod] = useState('vertical');
+
+  const oneInColumn = (element) => {
+    let cnt = 0;
+    for (let k = 0; k < matrix.length; k++) {
+      if (matrix[k][element][0] === 1) {
+        cnt++;
+      }
+      if (cnt > 1) {
+        return 0;
+      }
+    }
+    if (cnt < 1) {
+      return 0
+    }
+    return 1;
+  }
 
   useEffect(()=>{
     for (let i = 0; i < matrix.length; i++) {
@@ -50,7 +67,7 @@ const ImplicationMatrix = (props) => {
         if (method === 'vertical') {
           if (matrix[i][j][1] === 1) {
             
-            element.style.backgroundColor = 'rgb(152, 244, 152)';
+            element.style.backgroundColor = 'rgb(77, 178, 77)';
           }
           else 
             element.style.backgroundColor = 'transparent';
@@ -64,21 +81,45 @@ const ImplicationMatrix = (props) => {
             element.style.backgroundColor = 'transparent';
           }
         }
+
+        if (method === 'cross') {
+          if (matrix[i][j][2] === 1 && matrix[i][j][1] === 1) {
+            if (oneInColumn(j)&&matrix[i][j][0] === 1) {
+              element.style.backgroundColor = 'rgb(200, 180, 0)';
+            } else {
+            element.style.backgroundColor = 'rgb(77, 178, 77)';
+            }
+
+          } else if (matrix[i][j][2] === 1 || matrix[i][j][1] === 1) {
+            element.style.backgroundColor = 'rgb(152, 244, 152)';
+          } else {
+            element.style.backgroundColor = 'transparent';
+          }
+        }
       }
     }
-  }, [matrix, method])
+  }, [matrix, method]);
 
   useEffect(()=>{
     let leftButton = document.getElementById('button-left');
+    let centerButton = document.getElementById('button-center');
     let rightButton = document.getElementById('button-right');
     if (method === 'horizontal') {
       leftButton.className = 'button button-pressed left-border';
+      centerButton.className = 'button';
       rightButton.className = 'button right-border';
-    } else {
+    } else
+    if (method === 'vertical') {
       leftButton.className = 'button left-border';
-      rightButton.className = 'button button-pressed right-border';
+      centerButton.className = 'button button-pressed';
+      rightButton.className = 'button right-border';
+    } else
+    if (method === 'cross') {
+      leftButton.className = 'button left-border';
+      centerButton.className = 'button';
+      rightButton.className = 'button button-pressed right-border';      
     }
-  },[method])
+  },[method]);
 
   // setMatrix([...matrix.slice(0,index2), [...matrix[index].slice(0,index), [...matrix[index][index2].slice(0,index2), !matrix[index][index2][1], ...matrix[index][index2].slice(index2+1)], ...matrix.slice(index2+1)], ...matrix.slice(index)])
   const stateHandler = (i, i2, method) => {
@@ -93,7 +134,7 @@ const ImplicationMatrix = (props) => {
       }
       setMatrix(newMatrix);
     }
-    else if (method === 'horizontal') {
+    if (method === 'horizontal') {
       for (let k = 0; k < newMatrix[0].length; k++) {
         if (newMatrix[i][k][2]===0)
           newMatrix[i][k][2] = 1;
@@ -103,35 +144,56 @@ const ImplicationMatrix = (props) => {
       }
       setMatrix(newMatrix);
     }
-  };
+    if (method === 'cross') {
+      setMatrix(newMatrix);
+    }
+
+  }
+
+  for (let i = 0; i < matrix.length; i++) {
+    for (let i = 0; i < matrix.length; i++) {
+
+    }
+  }
 
   return (
     <div className='matrix-outer'>
       <h1>
         Импликантная матрица:
       </h1>
+      <p>
+        Выберите столбцы, которые содержат всего один <Latex>$"\times"$</Latex>, а затем строки, которые его содержат. Они будут вычеркнуты.
+      </p>
       <div style={{paddingTop: '10px'}} className='button-handler'>
         <button id='button-left' className='button left-border' onClick={()=>{setMethod('horizontal')}}>
-          Горизонтальное покрытие
+          Строки
         </button>
-        <button id='button-right' className='button right-border' onClick={()=>{setMethod('vertical')}}>
-          Вертикальное покрытие
+        <button id='button-center' className='button' onClick={()=>{setMethod('vertical')}}>
+          Столбцы
+        </button>
+        <button id='button-right' className='button right-border' onClick={()=>{setMethod('cross')}}>
+          Пересечение
         </button>
       </div>
 
       <div className='matrix'>
           
-          <tr>
-            <td className='cell'>&nbsp;</td>
-            {props.topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
-          </tr>
-            {props.leftSigns2.map((element, index) => {
-            return <tr>
-              <td className='cell'><Latex>${element}$</Latex></td>
-              {matrixData[index].map((elementMatrix, index2) => {
-                return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
-              })}
-              </tr>})}
+        <tr>
+          <td className='cell'>&nbsp;</td>
+          {props.topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
+        </tr>
+          {props.leftSigns2.map((element, index) => {
+        return <tr>
+          <td className='cell'><Latex>${element}$</Latex></td>
+          {matrixData[index].map((elementMatrix, index2) => {
+            return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+          })}
+          </tr>})}
+
+        </div>
+
+        <div>
+          {(method === 'cross') ? <Legend/> : ''}
         </div>
       
         <div>{matrix}</div>

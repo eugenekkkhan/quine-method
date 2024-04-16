@@ -1,16 +1,23 @@
 import './App.css';
 import React from 'react';
+import { Helmet } from "react-helmet";
+import Favicon from "react-favicon"
 import CheckValue from './components/checkValue';
+
 
 function App() {
   const [name, setName] = React.useState('');
-  document.body.addEventListener("keydown", (event) => {
-    if (event.ctrlKey) { event.preventDefault() }
-  });
-
 
   return (
     <div className="App">
+      <Favicon url='./qo.png'/>
+      <Helmet>
+
+      {document.addEventListener('gesturestart', function(event) {
+        event.preventDefault();
+      })}
+
+      </Helmet>
 
       <nav className="nav">
         <div className='left-nav'>
@@ -42,7 +49,6 @@ function App() {
       <div>
         <CheckValue value={name}/>
       </div>
-
     </div>
   );
 }
