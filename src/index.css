@@ -2,9 +2,33 @@ body {
   margin: 0;
   font-family: "JetBrains Mono";
   font-weight: 200;
+  overflow-x: hidden;
+  width: 100%;
 }
 .bold {
   font-weight: 400;
+}
+b {
+  font-style: normal;
+  font-weight: 400;
+}
+
+h1 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: larger;
+}
+
+h2 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: large;
+}
+
+h3 {
+  font-style: normal;
+  font-weight: 400;
+  font-size: medium;
 }
 
 .dark-green {
@@ -34,6 +58,8 @@ input {
   font-size: 50%;
   font-weight: 400;
 }
+
+
 
 .divSDNF:hover +.hidden-1, .divSDNF:active + .hidden-1 {
   display: block;

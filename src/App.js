@@ -20,9 +20,9 @@ function App() {
         </div>
       </nav>
       <div className='main top-padding'>
-        <p className='bold'>
+        <h1>
             Введите вектор функции:
-          </p>
+        </h1>
       </div>
       <div className='main'>
         <p>f = (</p>

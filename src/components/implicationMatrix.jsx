@@ -41,36 +41,86 @@ const ImplicationMatrix = (props) => {
 
 
   const [matrix, setMatrix] = useState(matrixData);
+  const [method, setMethod] = useState('vertical');
 
   useEffect(()=>{
     for (let i = 0; i < matrix.length; i++) {
       for (let j = 0; j < matrix[i].length; j++) {
         let element = document.getElementById(String(i)+j);
-        if (matrix[i][j][1] === 1) {
+        if (method === 'vertical') {
+          if (matrix[i][j][1] === 1) {
+            
+            element.style.backgroundColor = 'rgb(152, 244, 152)';
+          }
+          else 
+            element.style.backgroundColor = 'transparent';
+        } 
+        if (method === 'horizontal') {
+          if (matrix[i][j][2] === 1) {
           
-          element.style.backgroundColor = 'red';
+            element.style.backgroundColor = 'rgb(77, 178, 77)';
+          }
+          if (matrix[i][j][2] === 0) {
+            element.style.backgroundColor = 'transparent';
+          }
         }
-        else 
-          element.style.backgroundColor = 'transparent';
       }
     }
-  }, [matrix])
+  }, [matrix, method])
+
+  useEffect(()=>{
+    let leftButton = document.getElementById('button-left');
+    let rightButton = document.getElementById('button-right');
+    if (method === 'horizontal') {
+      leftButton.className = 'button button-pressed left-border';
+      rightButton.className = 'button right-border';
+    } else {
+      leftButton.className = 'button left-border';
+      rightButton.className = 'button button-pressed right-border';
+    }
+  },[method])
 
   // setMatrix([...matrix.slice(0,index2), [...matrix[index].slice(0,index), [...matrix[index][index2].slice(0,index2), !matrix[index][index2][1], ...matrix[index][index2].slice(index2+1)], ...matrix.slice(index2+1)], ...matrix.slice(index)])
-  const stateHandler = (i, i2) => {
+  const stateHandler = (i, i2, method) => {
     let newMatrix = _.cloneDeep(matrix);
-    if (newMatrix[i][i2][1]===0)
-      newMatrix[i][i2][1] = 1;
-    else
-      newMatrix[i][i2][1] = 0;
-    setMatrix(newMatrix);
+    if (method === 'vertical') {
+      for (let k = 0; k < newMatrix.length; k++) {
+        if (newMatrix[k][i2][1]===0)
+          newMatrix[k][i2][1] = 1;
+          
+        else
+          newMatrix[k][i2][1] = 0;
+      }
+      setMatrix(newMatrix);
+    }
+    else if (method === 'horizontal') {
+      for (let k = 0; k < newMatrix[0].length; k++) {
+        if (newMatrix[i][k][2]===0)
+          newMatrix[i][k][2] = 1;
+          
+        else
+          newMatrix[i][k][2] = 0;
+      }
+      setMatrix(newMatrix);
+    }
   };
-
 
   return (
     <div className='matrix-outer'>
+      <h1>
+        Импликантная матрица:
+      </h1>
+      <div style={{paddingTop: '10px'}} className='button-handler'>
+        <button id='button-left' className='button left-border' onClick={()=>{setMethod('horizontal')}}>
+          Горизонтальное покрытие
+        </button>
+        <button id='button-right' className='button right-border' onClick={()=>{setMethod('vertical')}}>
+          Вертикальное покрытие
+        </button>
+      </div>
 
       <div className='matrix'>
+          
           <tr>
             <td className='cell'>&nbsp;</td>
             {props.topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
@@ -79,14 +129,16 @@ const ImplicationMatrix = (props) => {
             return <tr>
               <td className='cell'><Latex>${element}$</Latex></td>
               {matrixData[index].map((elementMatrix, index2) => {
-                return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+                return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
               })}
               </tr>})}
         </div>
+      
         <div>{matrix}</div>
-        <div>matrix: {matrix.join('|')}</div>
+        <div>{method}</div>
+        {/* <div>matrix: {matrix.join('|')}</div>
         <div>xOneValues: {xOneValues.join('|')}</div>
-        <div>aXOneValues: {aXOneValues.join('|')}</div>
+        <div>aXOneValues: {aXOneValues.join('|')}</div> */}
               
     </div>
 
