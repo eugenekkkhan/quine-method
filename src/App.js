@@ -1,6 +1,7 @@
 import './App.css';
 import React from 'react';
 import { Helmet } from "react-helmet";
+import Favicon from "react-favicon"
 import CheckValue from './components/checkValue';
 
 
@@ -9,7 +10,7 @@ function App() {
 
   return (
     <div className="App">
-      
+      <Favicon url='./qo.png'/>
       <Helmet>
 
       {document.addEventListener('gesturestart', function(event) {
@@ -17,7 +18,6 @@ function App() {
       })}
 
       </Helmet>
-
 
       <nav className="nav">
         <div className='left-nav'>
@@ -49,7 +49,6 @@ function App() {
       <div>
         <CheckValue value={name}/>
       </div>
-
     </div>
   );
 }
