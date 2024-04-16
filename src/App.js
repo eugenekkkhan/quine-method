@@ -4,6 +4,10 @@ import CheckValue from './components/checkValue';
 
 function App() {
   const [name, setName] = React.useState('');
+  document.body.addEventListener("keydown", (event) => {
+    if (event.ctrlKey) { event.preventDefault() }
+  });
+
 
   return (
     <div className="App">
