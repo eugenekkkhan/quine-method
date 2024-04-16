@@ -120,6 +120,7 @@ html, body {
 @keyframes button-animation-in {
   from {
     border: 0px solid rgb(77, 178, 77);
+  
   }
   to {
     border: 1px solid rgb(77, 178, 77);
@@ -127,6 +128,7 @@ html, body {
 }
 
 .button {
+
   animation-name: button-animation-out;
   animation-duration: .1s;
   animation-timing-function: ease-in;
