@@ -1,16 +1,23 @@
 import './App.css';
 import React from 'react';
+import { Helmet } from "react-helmet";
 import CheckValue from './components/checkValue';
+
 
 function App() {
   const [name, setName] = React.useState('');
-  document.body.addEventListener("keydown", (event) => {
-    if (event.ctrlKey) { event.preventDefault() }
-  });
-
 
   return (
     <div className="App">
+      
+      <Helmet>
+
+      {document.addEventListener('gesturestart', function(event) {
+        event.preventDefault();
+      })}
+
+      </Helmet>
+
 
       <nav className="nav">
         <div className='left-nav'>
