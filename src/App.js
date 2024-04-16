@@ -4,6 +4,10 @@ import CheckValue from './components/checkValue';
 
 function App() {
   const [name, setName] = React.useState('');
+  document.body.addEventListener("keydown", (event) => {
+    if (event.ctrlKey) { event.preventDefault() }
+  });
+
 
   return (
     <div className="App">
@@ -20,9 +24,9 @@ function App() {
         </div>
       </nav>
       <div className='main top-padding'>
-        <p className='bold'>
+        <h1>
             Введите вектор функции:
-          </p>
+        </h1>
       </div>
       <div className='main'>
         <p>f = (</p>

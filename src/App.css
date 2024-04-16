@@ -1,7 +1,7 @@
 html, body {
+  position: relative;
   overflow-x: hidden;
-  width: 100%;
-}
+} 
 
 .main {
   padding-left: 2.5rem;
@@ -19,11 +19,11 @@ html, body {
   align-items: center;
   width: 100vw;
 
-  padding-top: 1.75rem;
-  padding-bottom: 1.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 
-  background-color: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
 }
 
 .left-nav {
@@ -99,8 +99,63 @@ html, body {
 
 }
 
+.left-border {
+  border-radius: 5px 0px 0px 5px;
+}
 
+.right-border {
+  border-radius: 0px 5px 5px 0px;
+}
 
+@keyframes button-animation-out {
+  from {
+    border: 1px solid rgb(152, 244, 152);
+
+  }
+  to {
+    border: 0px solid rgb(152, 244, 152);
+  }
+}
+
+@keyframes button-animation-in {
+  from {
+    border: 0px solid rgb(77, 178, 77);
+  }
+  to {
+    border: 1px solid rgb(77, 178, 77);
+  }
+}
+
+.button {
+  animation-name: button-animation-out;
+  animation-duration: .1s;
+  animation-timing-function: ease-in;
+  padding: 8px;
+  background-color: rgb(152, 244, 152); 
+  text-decoration: 0;
+  border: none; 
+  font-family: 'JetBrains Mono';
+  font-size: small;
+  color: rgba(0, 0, 0, .3);
+  width:50rem;
+}
+
+.button-pressed {
+  animation-name: button-animation-in;
+  animation-duration: .1s;
+  animation-timing-function: ease-in;
+  background-color: rgb(77, 178, 77); 
+  color: rgba(0, 0, 0, .7);
+  border: 1px solid rgb(77, 178, 77);
+}
+
+.button-handler {
+  padding-bottom: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+}
 
 @media screen and (max-width: 900px) {
   .flex-2-div {
@@ -111,17 +166,12 @@ html, body {
 
 
 @media screen and (max-width: 600px) {
-
-
   .container {
 
-    padding-left: 2rem;
-    padding-right: 2rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
     
   }
-
-
-
 }
 
 

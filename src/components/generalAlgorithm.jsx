@@ -293,9 +293,10 @@ const GeneralAlgorithm = (props) => {
     </div>
 
     <br/>
-
-    <ImplicationMatrix topSigns2={topSigns2} leftSigns2={leftSigns2} xValuesArrayFOne={xValuesArrayFOne} postAbbreviatedArray={postAbbreviatedArray}/>
-
+    <ImplicationMatrix zeroValue='2103712907429' topSigns2={topSigns2} leftSigns2={leftSigns2} xValuesArrayFOne={xValuesArrayFOne} postAbbreviatedArray={postAbbreviatedArray}/>
+    {/* props = { topSigns2: value } 
+    props.topSigns2 === value
+    */}
   </div>
 
 
