@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from 'react'
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
-import Logo from '../logo.svg'
 import ImplicationMatrix from './implicationMatrix';
+import Footer from './footer';
 
 const _ = require('lodash');
 
@@ -293,10 +293,11 @@ const GeneralAlgorithm = (props) => {
     </div>
 
     <br/>
-    <ImplicationMatrix zeroValue='2103712907429' topSigns2={topSigns2} leftSigns2={leftSigns2} xValuesArrayFOne={xValuesArrayFOne} postAbbreviatedArray={postAbbreviatedArray}/>
+    <ImplicationMatrix topSigns2={topSigns2} leftSigns2={leftSigns2} xValuesArrayFOne={xValuesArrayFOne} postAbbreviatedArray={postAbbreviatedArray}/>
     {/* props = { topSigns2: value } 
     props.topSigns2 === value
     */}
+    <Footer/>
   </div>
 
 

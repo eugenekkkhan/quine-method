@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Latex from 'react-latex-next';
 import Legend from './legend';
 
@@ -7,11 +7,7 @@ const _ = require('lodash');
 const ImplicationMatrix = (props) => {
   let xOneValues = props.xValuesArrayFOne;
   let aXOneValues = props.postAbbreviatedArray;
-  // const [active, setActive] = useState(0);
 
-  // const colored = {
-  //   backgroundColor: active ? 'white' : 'red'
-  // }
   const matrixData = [];
 
   function equalityCheck(firstArr, secondArr) {
@@ -44,21 +40,31 @@ const ImplicationMatrix = (props) => {
   const [matrix, setMatrix] = useState(matrixData);
   const [method, setMethod] = useState('vertical');
 
-  const oneInColumn = (element) => {
-    let cnt = 0;
-    for (let k = 0; k < matrix.length; k++) {
-      if (matrix[k][element][0] === 1) {
-        cnt++;
+  const oneInColumn = (element, localMethod = 'vertical') => {
+    if (localMethod === 'vertical') {
+      let cnt = 0;
+      for (let k = 0; k < matrix.length; k++) {
+        if (matrix[k][element][0] === 1) {
+          cnt++;
+        }
+        if (cnt > 1) {
+          return 0;
+        }
       }
-      if (cnt > 1) {
-        return 0;
+      
+      if (cnt === 1) {
+        return 1;
       }
     }
-    if (cnt < 1) {
-      return 0
+
+    if (localMethod === 'horizontal') {   
+      
     }
-    return 1;
+    
+
   }
+
+  // const [colorFlag1,setColorFlag1] = useState(false), [colorFlag2,setColorFlag2] = useState(false), [colorFlag3,setColorFlag3] = useState(false);
 
   useEffect(()=>{
     for (let i = 0; i < matrix.length; i++) {
@@ -68,6 +74,7 @@ const ImplicationMatrix = (props) => {
           if (matrix[i][j][1] === 1) {
             
             element.style.backgroundColor = 'rgb(77, 178, 77)';
+            
           }
           else 
             element.style.backgroundColor = 'transparent';
@@ -86,8 +93,10 @@ const ImplicationMatrix = (props) => {
           if (matrix[i][j][2] === 1 && matrix[i][j][1] === 1) {
             if (oneInColumn(j)&&matrix[i][j][0] === 1) {
               element.style.backgroundColor = 'rgb(200, 180, 0)';
+
             } else {
-            element.style.backgroundColor = 'rgb(77, 178, 77)';
+              element.style.backgroundColor = 'rgb(77, 178, 77)';
+
             }
 
           } else if (matrix[i][j][2] === 1 || matrix[i][j][1] === 1) {
@@ -124,25 +133,57 @@ const ImplicationMatrix = (props) => {
   // setMatrix([...matrix.slice(0,index2), [...matrix[index].slice(0,index), [...matrix[index][index2].slice(0,index2), !matrix[index][index2][1], ...matrix[index][index2].slice(index2+1)], ...matrix.slice(index2+1)], ...matrix.slice(index)])
   const stateHandler = (i, i2, method) => {
     let newMatrix = _.cloneDeep(matrix);
+
     if (method === 'vertical') {
+      let flag = false;
+      let cnt = 0;
       for (let k = 0; k < newMatrix.length; k++) {
-        if (newMatrix[k][i2][1]===0)
+        if (newMatrix[k][i2][1]===0) {
           newMatrix[k][i2][1] = 1;
-          
-        else
+        }
+        else {
           newMatrix[k][i2][1] = 0;
+        }
+        if (newMatrix[k][i2][0]===1) {
+          cnt++;
+        }
+        if (newMatrix[k][i2][0]===1 && newMatrix[k][i2][2]===1) {
+          flag = true;
+        }
+      }
+      if (cnt>1 && !flag) {
+        return alert('Ошибка! В данном столбце больше одного "⨯"')
       }
       setMatrix(newMatrix);
     }
     if (method === 'horizontal') {
+      let flag = false;
       for (let k = 0; k < newMatrix[0].length; k++) {
-        if (newMatrix[i][k][2]===0)
+        if (newMatrix[i][k][2]===0) {
           newMatrix[i][k][2] = 1;
-          
-        else
+        } else {
           newMatrix[i][k][2] = 0;
+        }
+
+        if (newMatrix[i][k][0] === 1) {
+          let cnt = 0;
+          for (let g = 0; g < newMatrix.length; g++) {
+            if (newMatrix[g][k][0] === 1) {
+              cnt++;
+            }
+          }
+          if (cnt === 1) {
+            flag = true;
+          }
+          
+        }
+
       }
-      setMatrix(newMatrix);
+      if (!flag) {
+        return alert('Ошибка! В данной строке все столбцы имеют больше одного "⨯"')
+      } else {
+        setMatrix(newMatrix);
+      }
     }
     if (method === 'cross') {
       setMatrix(newMatrix);
@@ -150,11 +191,7 @@ const ImplicationMatrix = (props) => {
 
   }
 
-  for (let i = 0; i < matrix.length; i++) {
-    for (let i = 0; i < matrix.length; i++) {
 
-    }
-  }
 
   return (
     <div className='matrix-outer'>
@@ -188,19 +225,18 @@ const ImplicationMatrix = (props) => {
           {matrixData[index].map((elementMatrix, index2) => {
             return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
           })}
-          </tr>})}
+        </tr>})}
 
-        </div>
-
-        <div>
-          {(method === 'cross') ? <Legend/> : ''}
-        </div>
+      </div>
       
-        <div>{matrix}</div>
-        <div>{method}</div>
-        {/* <div>matrix: {matrix.join('|')}</div>
-        <div>xOneValues: {xOneValues.join('|')}</div>
-        <div>aXOneValues: {aXOneValues.join('|')}</div> */}
+      
+      <div>
+          {(method === 'cross') ? <Legend/> : ''}
+      </div>
+      
+      {/* <div>matrix: {matrix.join('|')}</div>
+      <div>xOneValues: {xOneValues.join('|')}</div>
+      <div>aXOneValues: {aXOneValues.join('|')}</div> */}
               
     </div>
 
@@ -208,3 +244,4 @@ const ImplicationMatrix = (props) => {
 }
 
 export default ImplicationMatrix
+//1010111001010100

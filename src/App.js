@@ -25,9 +25,9 @@ function App() {
           <p className='light-green'>Online</p>
         </div>
         <div className='right-nav'>
-          <p className='light-green'>
+          <a className='light-green'>
             Справка
-          </p>
+          </a>
         </div>
       </nav>
       <div className='main top-padding'>

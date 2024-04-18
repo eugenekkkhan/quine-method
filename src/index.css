@@ -59,7 +59,13 @@ input {
   font-weight: 400;
 }
 
+.actions {
+  flex: 1;
+}
 
+.tablewrapper {
+  flex: 4;
+}
 
 .divSDNF:hover +.hidden-1, .divSDNF:active + .hidden-1 {
   display: block;
