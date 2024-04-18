@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/quine-method/static/css/main.32252f39.css",
-    "main.js": "/quine-method/static/js/main.5053ba54.js",
+    "main.css": "/quine-method/static/css/main.d824e193.css",
+    "main.js": "/quine-method/static/js/main.19417e92.js",
     "static/js/453.4d69dbbc.chunk.js": "/quine-method/static/js/453.4d69dbbc.chunk.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/quine-method/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/quine-method/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -83,18 +83,17 @@
     "static/media/jetbrains-mono-vietnamese-400-normal.woff2": "/quine-method/static/media/jetbrains-mono-vietnamese-400-normal.e873f81ec1b064629ea4.woff2",
     "static/media/jetbrains-mono-vietnamese-100-normal.woff2": "/quine-method/static/media/jetbrains-mono-vietnamese-100-normal.bf9414b8fa73086623af.woff2",
     "static/media/KaTeX_Size3-Regular.woff2": "/quine-method/static/media/KaTeX_Size3-Regular.e1951519f6f0596f7356.woff2",
-    "static/media/logo.svg": "/quine-method/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "static/media/jetbrains-mono-cyrillic-ext-400-normal.woff": "/quine-method/static/media/jetbrains-mono-cyrillic-ext-400-normal.98bc73b094c941e70819.woff",
     "static/media/jetbrains-mono-cyrillic-ext-100-normal.woff": "/quine-method/static/media/jetbrains-mono-cyrillic-ext-100-normal.94225b5a4c102854478d.woff",
     "static/media/jetbrains-mono-cyrillic-ext-400-normal.woff2": "/quine-method/static/media/jetbrains-mono-cyrillic-ext-400-normal.116395f5d16bf9918fd9.woff2",
     "static/media/jetbrains-mono-cyrillic-ext-100-normal.woff2": "/quine-method/static/media/jetbrains-mono-cyrillic-ext-100-normal.9e6fa66704fefcc86efb.woff2",
     "index.html": "/quine-method/index.html",
-    "main.32252f39.css.map": "/quine-method/static/css/main.32252f39.css.map",
-    "main.5053ba54.js.map": "/quine-method/static/js/main.5053ba54.js.map",
+    "main.d824e193.css.map": "/quine-method/static/css/main.d824e193.css.map",
+    "main.19417e92.js.map": "/quine-method/static/js/main.19417e92.js.map",
     "453.4d69dbbc.chunk.js.map": "/quine-method/static/js/453.4d69dbbc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.32252f39.css",
-    "static/js/main.5053ba54.js"
+    "static/css/main.d824e193.css",
+    "static/js/main.19417e92.js"
   ]
 }
