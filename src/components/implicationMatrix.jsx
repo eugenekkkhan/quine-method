@@ -1,12 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import Latex from 'react-latex-next';
 import Legend from './legend';
+import FinalMatrix from './finalMatrix';
+import { context } from './generalAlgorithm';
 
 const _ = require('lodash');
-
-const ImplicationMatrix = (props) => {
-  let xOneValues = props.xValuesArrayFOne;
-  let aXOneValues = props.postAbbreviatedArray;
+const ImplicationMatrix = () => {
+  const {topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray} = useContext(context);
+  let xOneValues = xValuesArrayFOne;
+  let aXOneValues = postAbbreviatedArray;
 
   const matrixData = [];
 
@@ -61,30 +63,37 @@ const ImplicationMatrix = (props) => {
       
     }
     
-
   }
 
   // const [colorFlag1,setColorFlag1] = useState(false), [colorFlag2,setColorFlag2] = useState(false), [colorFlag3,setColorFlag3] = useState(false);
 
   useEffect(()=>{
     for (let i = 0; i < matrix.length; i++) {
-      for (let j = 0; j < matrix[i].length; j++) {
-        let element = document.getElementById(String(i)+j);
+      for (let j = 0; j < matrix[0].length; j++) {
+        let element = document.getElementById("h"+String(i)+"w"+j);
         if (method === 'vertical') {
           if (matrix[i][j][1] === 1) {
             
             element.style.backgroundColor = 'rgb(77, 178, 77)';
             
-          }
-          else 
+          } else 
+          if (matrix[i][j][2] === 1) {
+
+            element.style.backgroundColor = 'rgb(152, 244, 152)';
+
+          } else 
             element.style.backgroundColor = 'transparent';
         } 
         if (method === 'horizontal') {
           if (matrix[i][j][2] === 1) {
           
-            element.style.backgroundColor = 'rgb(77, 178, 77)';
-          }
-          if (matrix[i][j][2] === 0) {
+            element.style.backgroundColor ='rgb(77, 178, 77)';
+          } else
+          if (matrix[i][j][1] === 1) {
+            
+            element.style.backgroundColor = 'rgb(152, 244, 152)';
+            
+          } else {
             element.style.backgroundColor = 'transparent';
           }
         }
@@ -93,23 +102,28 @@ const ImplicationMatrix = (props) => {
           if (matrix[i][j][2] === 1 && matrix[i][j][1] === 1) {
             if (oneInColumn(j)&&matrix[i][j][0] === 1) {
               element.style.backgroundColor = 'rgb(200, 180, 0)';
-
             } else {
               element.style.backgroundColor = 'rgb(77, 178, 77)';
-
             }
 
           } else if (matrix[i][j][2] === 1 || matrix[i][j][1] === 1) {
             element.style.backgroundColor = 'rgb(152, 244, 152)';
+            
           } else {
             element.style.backgroundColor = 'transparent';
           }
+
         }
       }
     }
   }, [matrix, method]);
 
+  // let counter = 0;
+  const [counter, setCounter] = useState(0);
+
   useEffect(()=>{
+    
+    let guideText = document.getElementById('guide');
     let leftButton = document.getElementById('button-left');
     let centerButton = document.getElementById('button-center');
     let rightButton = document.getElementById('button-right');
@@ -117,21 +131,30 @@ const ImplicationMatrix = (props) => {
       leftButton.className = 'button button-pressed left-border';
       centerButton.className = 'button';
       rightButton.className = 'button right-border';
+      guideText.textContent = 'Теперь выберите ВСЕ строки из столбцов, где есть всего один "⨯" и возвращайтесь в "Столбцы".';
+      setCounter(prev=>prev+1);
     } else
     if (method === 'vertical') {
       leftButton.className = 'button left-border';
       centerButton.className = 'button button-pressed';
       rightButton.className = 'button right-border';
+
+      if (counter === 0)
+        guideText.textContent = 'Выберите ВСЕ столбцы, которые содержат всего один "⨯" и переходите в раздел "Строки".';
+      else
+        guideText.textContent = 'Теперь выберите ВСЕ столбцы, на отмеченных строках которых есть "⨯" или оставшиеся столбцы, которые содержат всего один "⨯" (если вы забыли про какой-то из столбцов на первом этапе). После того, как закончите свой выбор, переходите во вкладку "Пересечение".';
     } else
     if (method === 'cross') {
       leftButton.className = 'button left-border';
       centerButton.className = 'button';
-      rightButton.className = 'button button-pressed right-border';      
+      rightButton.className = 'button button-pressed right-border';  
+      guideText.textContent = 'Итоговое отображение импликантной таблицы';    
     }
   },[method]);
 
   // setMatrix([...matrix.slice(0,index2), [...matrix[index].slice(0,index), [...matrix[index][index2].slice(0,index2), !matrix[index][index2][1], ...matrix[index][index2].slice(index2+1)], ...matrix.slice(index2+1)], ...matrix.slice(index)])
   const stateHandler = (i, i2, method) => {
+    
     let newMatrix = _.cloneDeep(matrix);
 
     if (method === 'vertical') {
@@ -152,14 +175,17 @@ const ImplicationMatrix = (props) => {
         }
       }
       if (cnt>1 && !flag) {
-        return alert('Ошибка! В данном столбце больше одного "⨯"')
+        if (counter === 0)
+          return alert('Ошибка! В данном столбце больше одного "⨯"')
+        else
+          return alert('Ошибка! В данном столбце больше одного "⨯" или столбец не имеет ни одного "⨯" на отмеченных строках')
       }
       setMatrix(newMatrix);
     }
     if (method === 'horizontal') {
       let flag = false;
       for (let k = 0; k < newMatrix[0].length; k++) {
-        if (newMatrix[i][k][2]===0) {
+        if (newMatrix[i][k][2] === 0) {
           newMatrix[i][k][2] = 1;
         } else {
           newMatrix[i][k][2] = 0;
@@ -194,52 +220,52 @@ const ImplicationMatrix = (props) => {
 
 
   return (
-    <div className='matrix-outer'>
-      <h1>
-        Импликантная матрица:
-      </h1>
-      <p>
-        Выберите столбцы, которые содержат всего один <Latex>$"\times"$</Latex>, а затем строки, которые его содержат. Они будут вычеркнуты.
-      </p>
-      <div style={{paddingTop: '10px'}} className='button-handler'>
-        <button id='button-left' className='button left-border' onClick={()=>{setMethod('horizontal')}}>
-          Строки
-        </button>
-        <button id='button-center' className='button' onClick={()=>{setMethod('vertical')}}>
-          Столбцы
-        </button>
-        <button id='button-right' className='button right-border' onClick={()=>{setMethod('cross')}}>
-          Пересечение
-        </button>
-      </div>
+      <div className='matrix-outer'>
+        <h1>
+          Импликантная матрица:
+        </h1>
+        <p id='guide'>
 
-      <div className='matrix'>
-          
-        <tr>
-          <td className='cell'>&nbsp;</td>
-          {props.topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
-        </tr>
-          {props.leftSigns2.map((element, index) => {
-        return <tr>
-          <td className='cell'><Latex>${element}$</Latex></td>
-          {matrixData[index].map((elementMatrix, index2) => {
-            return <td id={String(index) + index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
-          })}
-        </tr>})}
+        </p>
+        <div style={{paddingTop: '10px'}} className='button-handler'>
+          <button id='button-left' className='button left-border' onClick={()=>{setMethod('horizontal')}}>
+            Строки
+          </button>
+          <button id='button-center' className='button' onClick={()=>{setMethod('vertical')}}>
+            Столбцы
+          </button>
+          <button id='button-right' className='button right-border' onClick={()=>{setMethod('cross')}}>
+            Пересечение
+          </button>
+        </div>
 
-      </div>
-      
-      
-      <div>
-          {(method === 'cross') ? <Legend/> : ''}
-      </div>
-      
-      {/* <div>matrix: {matrix.join('|')}</div>
-      <div>xOneValues: {xOneValues.join('|')}</div>
-      <div>aXOneValues: {aXOneValues.join('|')}</div> */}
-              
-    </div>
+        <div className='matrix'>
+            
+          <tr>
+            <td className='cell'>&nbsp;</td>
+            {topSigns2.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
+          </tr>
+            {leftSigns2.map((element, index) => {
+          return <tr>
+            <td className='cell'><Latex>${element}$</Latex></td>
+            {matrixData[index].map((elementMatrix, index2) => {
+              return <td id={'h'+String(index) +'w'+index2} className='cell' onClick={()=>stateHandler(index, index2, method)}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+            })}
+          </tr>})}
 
+        </div>
+        
+        
+        <div>
+            {(method === 'cross') ? <div><Legend/><FinalMatrix matrix={matrix}/></div> : ''}
+            
+        </div>
+        
+        {/* <div>matrix: {matrix.join('|')}</div>
+        <div>xOneValues: {xOneValues.join('|')}</div>
+        <div>aXOneValues: {aXOneValues.join('|')}</div> */}
+                
+      </div>
   )
 }
 
