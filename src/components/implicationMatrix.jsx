@@ -355,8 +355,8 @@ const ImplicationMatrix = () => {
 
         </div>
         <div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
-					<input type="checkbox" name="" id="show-cor" onClick={()=>{autoColoring()}}/>
-					<label for='show-cor'>Отметить все строки и столбцы автоматически</label>
+					<input type="checkbox" name="" id="show-cor2" onClick={()=>{autoColoring()}}/>
+					<label for='show-cor2'>Отметить все строки и столбцы автоматически</label>
 				</div>
         
         <div>
