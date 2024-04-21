@@ -1,11 +1,13 @@
 'use strict';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, createContext } from 'react'
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
-import Logo from '../logo.svg'
 import ImplicationMatrix from './implicationMatrix';
+import Footer from './footer';
 
 const _ = require('lodash');
+let context = createContext(null);
+export {context};
 
 const GeneralAlgorithm = (props) => {
   let arrayValues = new Array(); 
@@ -258,47 +260,52 @@ const GeneralAlgorithm = (props) => {
     leftSigns2.push(localStr)
   }
 
-  
+
 
   return (
-  <div className='container'>
-    <div className='flex-2-div'>
-      <div className='tablewrapper'>
-        <div className='table'>
-          <tr>
-            <td className='cell-fixed'>&nbsp;</td>
-            {topSigns1.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
-            <td className='cell'>f</td>
-          </tr>
-          {xValuesArray.map((innerArray, index) => {
-            return <tr><td className='cell-fixed'>{index+1}</td>{innerArray.map(element => <td className={(element == 1) ? 'cell green-bg' : 'cell red-bg'}>{element}</td>)} <td className={(props.value[index]==1) ? 'cell green-bg' : 'cell red-bg'}>{props.value[index]}</td></tr>
-          })}
-          
+  <context.Provider value={{topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray}}>
+    <div className='container'>
+      <h1>
+          Таблица истинности:
+      </h1>
+      <div className='flex-2-div'>
+        <div className='tablewrapper'>
+          <div className='table'>
+            <tr>
+              <td className='cell-fixed'>&nbsp;</td>
+              {topSigns1.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
+              <td className='cell'>f</td>
+            </tr>
+            {xValuesArray.map((innerArray, index) => {
+              return <tr><td className='cell-fixed'>{index+1}</td>{innerArray.map(element => <td className={(element == 1) ? 'cell green-bg' : 'cell red-bg'}>{element}</td>)} <td className={(props.value[index]==1) ? 'cell green-bg' : 'cell red-bg'}>{props.value[index]}</td></tr>
+            })}
+            
+          </div>
+        </div>
+        <div className='actions'>
+            <div className="divSDNF">СДНФ:</div>
+            <div className='hidden-1'>Совершенная дизъюнктивная нормальная форма</div>
+            <div className='latexSDNF'>
+              <Latex displayMode={true}>
+                $f={outputSDNF(xValuesArrayFOne)}$
+              </Latex>
+            </div>
+
+            <div className='gluing'>Сокращенная ДНФ:</div>
+            <div className='hidden-2'>Подробнее в справке</div>
+            <Latex>$f={outputADNF(postAbbreviatedArray)}$</Latex>
+
         </div>
       </div>
-      <div className='actions'>
-          <div className="divSDNF">СДНФ:</div>
-          <div className='hidden-1'>Совершенная дизъюнктивная нормальная форма</div>
-          <div className='latexSDNF'>
-            <Latex displayMode={true}>
-              $f={outputSDNF(xValuesArrayFOne)}$
-            </Latex>
-          </div>
 
-          <div className='gluing'>Сокращенная ДНФ:</div>
-          <div className='hidden-2'>Пример для вектора 00101111 находится в справке</div>
-          <Latex>$f={outputADNF(postAbbreviatedArray)}$</Latex>
-
-      </div>
+      <br/>
+      <ImplicationMatrix/>
+      {/* props = { topSigns2: value } 
+      props.topSigns2 === value
+      */}
+      <Footer/>
     </div>
-
-    <br/>
-    <ImplicationMatrix zeroValue='2103712907429' topSigns2={topSigns2} leftSigns2={leftSigns2} xValuesArrayFOne={xValuesArrayFOne} postAbbreviatedArray={postAbbreviatedArray}/>
-    {/* props = { topSigns2: value } 
-    props.topSigns2 === value
-    */}
-  </div>
-
+  </context.Provider>
 
   )
 }
