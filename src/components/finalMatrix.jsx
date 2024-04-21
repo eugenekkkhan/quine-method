@@ -110,7 +110,6 @@ const FinalMatrix = ({matrix}) => {
 
 	useEffect ( () => {
 		let getElement1 = document.getElementById('table-wrapper');
-		console.log(getElement1);
 		if (minDNFMatrix.length === 0) {
 			getElement1.style.display = 'none';
 		} else {
@@ -169,6 +168,7 @@ const FinalMatrix = ({matrix}) => {
 
 				
 			</div>
+			
 			<h2>Минимальная ДНФ:</h2>
 			<Latex>${fMin}= {(mapWithBr.length > 0)? mapWithBr : ''} {(mapWithBr.length > 0 && coveredArray.length > 0 && colored) ? '\\lor \\newline' : ''} {(coveredArray.length > 0 && colored) ? `${coveredArray.map((_e, i)=>`(${leftSigns3[i]})`).join('\\lor \\newline')}` : ''}$</Latex>
 		</div>

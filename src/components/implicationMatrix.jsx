@@ -119,7 +119,82 @@ const ImplicationMatrix = () => {
   }, [matrix, method]);
 
   // let counter = 0;
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(false);
+  const [button, setButton] = useState(false);
+
+  const autoColoring = () => {
+
+    let newMatrix = _.cloneDeep(matrix);
+    for (let x = 0; x < newMatrix[0].length; x++) {
+      
+      let cnt = 0;
+      for (let y = 0; y < newMatrix.length; y++) {
+
+        if (newMatrix[y][x][0]===1) {
+          cnt++;
+        }
+
+      }
+      if (cnt === 1) {
+        for (let y = 0; y < newMatrix.length; y++) {
+          newMatrix[y][x][1] = 1;
+        }
+      }
+
+      setButton(true);
+    }
+
+    for (let y = 0; y < newMatrix.length; y++) {
+      let flag = false;
+      for (let x = 0; x < newMatrix[0].length; x++) {
+        if (newMatrix[y][x][0] === 1) {
+          let cnt = 0;
+          for (let g = 0; g < newMatrix.length; g++) {
+            if (newMatrix[g][x][0] === 1) {
+              cnt++;
+            }
+          }
+          if (cnt === 1) {
+            flag = true;
+          }
+          
+        }
+
+      }
+      if (flag) {
+        for (let x = 0; x < newMatrix[0].length; x++) {
+          if (newMatrix[y][x][2] === 0) {
+            newMatrix[y][x][2] = 1;
+          } else {
+            newMatrix[y][x][2] = 0;
+          }
+        }
+      }
+    }
+
+    for (let x = 0; x < newMatrix[0].length; x++) {
+      let flag = false;
+
+      for (let y = 0; y < newMatrix.length; y++) {
+
+        if (newMatrix[y][x][0]===1 && newMatrix[y][x][2]===1) {
+          flag = true;
+        }
+
+      }
+
+      if (flag)
+        for (let p = 0; p < newMatrix.length; p++) {
+          if (newMatrix[p][x][1]===0) {
+            newMatrix[p][x][1] = 1;
+    
+          }
+        }
+    }
+    setMatrix(newMatrix);
+  } 
+  
+  
 
   useEffect(()=>{
     
@@ -132,14 +207,19 @@ const ImplicationMatrix = () => {
       centerButton.className = 'button';
       rightButton.className = 'button right-border';
       guideText.textContent = 'Теперь выберите ВСЕ строки из столбцов, где есть всего один "⨯" и возвращайтесь в "Столбцы".';
-      setCounter(prev=>prev+1);
+      setCounter(true);
+      console.log(counter);
     } else
     if (method === 'vertical') {
-      leftButton.className = 'button left-border';
+      if (button)
+        leftButton.className = 'button left-border';
+      else {
+        leftButton.className = 'button-disabled left-border';
+      }
       centerButton.className = 'button button-pressed';
       rightButton.className = 'button right-border';
 
-      if (counter === 0)
+      if (counter === false)
         guideText.textContent = 'Выберите ВСЕ столбцы, которые содержат всего один "⨯" и переходите в раздел "Строки".';
       else
         guideText.textContent = 'Теперь выберите ВСЕ столбцы, на отмеченных строках которых есть "⨯" или оставшиеся столбцы, которые содержат всего один "⨯" (если вы забыли про какой-то из столбцов на первом этапе). После того, как закончите свой выбор, переходите во вкладку "Пересечение".';
@@ -150,22 +230,28 @@ const ImplicationMatrix = () => {
       rightButton.className = 'button button-pressed right-border';  
       guideText.textContent = 'Итоговое отображение импликантной таблицы';    
     }
-  },[method]);
+  },[method, button]);
 
-  // setMatrix([...matrix.slice(0,index2), [...matrix[index].slice(0,index), [...matrix[index][index2].slice(0,index2), !matrix[index][index2][1], ...matrix[index][index2].slice(index2+1)], ...matrix.slice(index2+1)], ...matrix.slice(index)])
   const stateHandler = (i, i2, method) => {
     
     let newMatrix = _.cloneDeep(matrix);
 
     if (method === 'vertical') {
       let flag = false;
+      let flag2 = false;
+      let add = true;
       let cnt = 0;
       for (let k = 0; k < newMatrix.length; k++) {
         if (newMatrix[k][i2][1]===0) {
           newMatrix[k][i2][1] = 1;
+
         }
         else {
-          newMatrix[k][i2][1] = 0;
+          add = false;
+          if (newMatrix[k][i2][2]===1 && newMatrix[k][i2][1]===1) {
+            flag2 = true
+          }
+
         }
         if (newMatrix[k][i2][0]===1) {
           cnt++;
@@ -174,12 +260,27 @@ const ImplicationMatrix = () => {
           flag = true;
         }
       }
+      for (let k = 0; k < newMatrix.length; k++) {
+        if (!flag2 && !add) {
+          newMatrix[k][i2][1] = 0;
+        }
+      }
       if (cnt>1 && !flag) {
         if (counter === 0)
           return alert('Ошибка! В данном столбце больше одного "⨯"')
         else
           return alert('Ошибка! В данном столбце больше одного "⨯" или столбец не имеет ни одного "⨯" на отмеченных строках')
       }
+      let localFlag = false;
+      for (let k = 0; k < newMatrix.length; k++) {
+        for (let p = 0; p < newMatrix[0].length; p++) {
+          if (newMatrix[k][p][1]===1) {
+            localFlag = true;
+          }
+        }
+      }
+      setButton(localFlag);
+      
       setMatrix(newMatrix);
     }
     if (method === 'horizontal') {
@@ -203,7 +304,6 @@ const ImplicationMatrix = () => {
           }
           
         }
-
       }
       if (!flag) {
         return alert('Ошибка! В данной строке все столбцы имеют больше одного "⨯"')
@@ -228,7 +328,7 @@ const ImplicationMatrix = () => {
 
         </p>
         <div style={{paddingTop: '10px'}} className='button-handler'>
-          <button id='button-left' className='button left-border' onClick={()=>{setMethod('horizontal')}}>
+          <button id='button-left' className='button left-border' onClick={()=>{if (button) setMethod('horizontal')}}>
             Строки
           </button>
           <button id='button-center' className='button' onClick={()=>{setMethod('vertical')}}>
@@ -254,7 +354,10 @@ const ImplicationMatrix = () => {
           </tr>})}
 
         </div>
-        
+        <div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
+					<input type="checkbox" name="" id="show-cor" onClick={()=>{autoColoring()}}/>
+					<label for='show-cor'>Отметить все строки и столбцы автоматически</label>
+				</div>
         
         <div>
             {(method === 'cross') ? <div><Legend/><FinalMatrix matrix={matrix}/></div> : ''}
