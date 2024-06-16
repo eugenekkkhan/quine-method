@@ -1,4 +1,3 @@
-'use strict';
 import React, { useEffect, useState, createContext } from 'react'
 import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
@@ -10,7 +9,8 @@ let context = createContext(null);
 export {context};
 
 const GeneralAlgorithm = (props) => {
-  let arrayValues = new Array(); 
+  let arrayValues = new Array();
+  let value = props.value; 
   let len = props.value.length;
 
   for (let i = 0; i < props.value.length; i++) {
@@ -39,7 +39,7 @@ const GeneralAlgorithm = (props) => {
 
   var topSigns1 = [];
   for (let i = 0; i < props.power; i++) {
-    topSigns1.push(`${i}`)
+    topSigns1.push(`${i+1}`)
   }
 
   let xValuesArrayFOne = []
@@ -60,9 +60,9 @@ const GeneralAlgorithm = (props) => {
         
         if (inputArr[i] != -1) {
           if (inputArr[i][j] == 1) {
-            localStr += " x_"+ j;
+            localStr += " x_"+ Number(j+1);
           } else {
-            localStr += "\\overline" + " x_" + j;
+            localStr += "\\overline" + " x_" + Number(j+1);
           }
           if (j < inputArr[i].length-1) {
             localStr += "\\land"
@@ -95,9 +95,9 @@ const GeneralAlgorithm = (props) => {
           k++;
         } else {
           if (inputArr[i][k]=="1") {
-            localStr += " x_"+k;
+            localStr += " x_"+(k+1);
           } else {
-            localStr += "\\overline x_"+k;
+            localStr += "\\overline x_"+(k+1);
           }
           k++;
           cIndex++;
@@ -218,15 +218,15 @@ const GeneralAlgorithm = (props) => {
     for (let j = 0; j < xValuesArrayFOne[i].length; j++) {
       if (xValuesArrayFOne[i][j] == "1") {
         if (j == xValuesArrayFOne[i].length-1) {
-          localStr += "x_"+j;
+          localStr += "x_"+Number(j+1);
         } else {
-          localStr += "x_"+j +"\\land ";
+          localStr += "x_"+Number(j+1) +"\\land ";
         }
       } else {
         if (j == xValuesArrayFOne[i].length-1) {
-          localStr += "\\overline x_"+j;
+          localStr += "\\overline x_"+Number(j+1);
         } else {
-          localStr += "\\overline x_"+j +"\\land ";
+          localStr += "\\overline x_"+Number(j+1)+"\\land ";
         }
       }
 
@@ -246,9 +246,9 @@ const GeneralAlgorithm = (props) => {
         k++;
       } else {
         if (postAbbreviatedArray[i][k]=="1") {
-          localStr += " x_"+k;
+          localStr += " x_"+Number(k+1);
         } else {
-          localStr += "\\overline x_"+k;
+          localStr += "\\overline x_"+Number(k+1);
         }
         k++;
         cIndex++;
@@ -263,7 +263,7 @@ const GeneralAlgorithm = (props) => {
 
 
   return (
-  <context.Provider value={{topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray}}>
+  <context.Provider value={{topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray, value}}>
     <div className='container'>
       <h1>
           Таблица истинности:
@@ -273,7 +273,7 @@ const GeneralAlgorithm = (props) => {
           <div className='table'>
             <tr>
               <td className='cell-fixed'>&nbsp;</td>
-              {topSigns1.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
+              {topSigns1?.map(element => <td className='cell'>x<custom className='lower-index-size'>{element}</custom></td>)}
               <td className='cell'>f</td>
             </tr>
             {xValuesArray.map((innerArray, index) => {
@@ -287,19 +287,21 @@ const GeneralAlgorithm = (props) => {
             <div className='hidden-1'>Совершенная дизъюнктивная нормальная форма</div>
             <div className='latexSDNF'>
               <Latex displayMode={true}>
-                $f={outputSDNF(xValuesArrayFOne)}$
+                $f={((outputSDNF(xValuesArrayFOne).length > 0) ? outputSDNF(xValuesArrayFOne) : "0")}$
               </Latex>
             </div>
 
             <div className='gluing'>Сокращенная ДНФ:</div>
             <div className='hidden-2'>Подробнее в справке</div>
-            <Latex>$f={outputADNF(postAbbreviatedArray)}$</Latex>
+            <Latex>$f={((outputSDNF(postAbbreviatedArray).length > 0) ? outputSDNF(postAbbreviatedArray) : "0")}$</Latex>
+            <p>{(outputADNF(postAbbreviatedArray).length > 0) ? '' : 'Это и есть минимальная ДНФ'}</p>
 
         </div>
       </div>
 
       <br/>
-      <ImplicationMatrix/>
+      {(outputADNF(postAbbreviatedArray).length > 0) ? <ImplicationMatrix/> : ''}
+      
       {/* props = { topSigns2: value } 
       props.topSigns2 === value
       */}

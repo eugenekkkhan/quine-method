@@ -2,56 +2,101 @@ import React, { useEffect, useState, useContext } from 'react'
 import Latex from 'react-latex-next';
 import { context } from './generalAlgorithm';
 
-const FinalMatrix = ({matrix}) => {
+const _ = require('lodash');
+
+const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 	const {topSigns2, leftSigns2} = useContext(context);
 	const coreDNF = [];
+	const coreDNFm = [];
 	let minDNFMatrix = [];
+	let minDNFMatrix2 = [];
 	let leftSigns3 = [];
+	let leftSigns3M = [];
 	let topSigns3 = [];
+	let topSigns3M = [];
 
-  const oneInColumn = (element, localMethod = 'vertical') => {
-    if (localMethod === 'vertical') {
-      let cnt = 0;
-      for (let k = 0; k < matrix.length; k++) {
-        if (matrix[k][element][0] === 1) {
-          cnt++;
-        }
-        if (cnt > 1) {
-          return 0;
-        }
-      }
-      
-      if (cnt === 1) {
-        return 1;
-      }
-    }
+  	const oneInColumn = (element, localMethod = 'vertical') => {
+		if (localMethod === 'vertical') {
+		let cnt = 0;
+		for (let k = 0; k < userMatrix.length; k++) {
+			if (userMatrix[k][element][0] === 1) {
+			cnt++;
+			}
+			if (cnt > 1) {
+			return 0;
+			}
+		}
+		
+		if (cnt === 1) {
+			return 1;
+		}
+		}
 
-    if (localMethod === 'horizontal') {   
-      
-    }
-    
-  }
-
-	for (let i = 0; i < matrix.length; i++) {
+		if (localMethod === 'horizontal') {   
+		
+		}
+		
+  	}
+	
+	for (let i = 0; i < userMatrix.length; i++) {
 		let row = [];
-		for (let j = 0; j < matrix[0].length; j++) {
-			if (matrix[i][j][0] === 1 && matrix[i][j][1] === 1 && matrix[i][j][2] === 1 && oneInColumn(j)&&matrix[i][j][0]) {
+		for (let j = 0; j < userMatrix[0].length; j++) {
+			if (userMatrix[i][j][0] === 1 && userMatrix[i][j][1] === 1 && userMatrix[i][j][2] === 1 && oneInColumn(j)) {
 
 				if (!coreDNF.includes(leftSigns2[i])) 
 					coreDNF.push(leftSigns2[i]);
 			}
-			if (matrix[i][j][1] === 0 && matrix[i][j][2] === 0) {
+			if (userMatrix[i][j][1] === 0 && userMatrix[i][j][2] === 0) {
 				if (!leftSigns3.includes(leftSigns2[i]))
 					leftSigns3.push(leftSigns2[i])
 				if (!topSigns3.includes(topSigns2[j]))
 					topSigns3.push(topSigns2[j])
-				row.push(matrix[i][j]);
+				row.push(userMatrix[i][j]);
 
 			}
 		}
 		if (row.length > 0) {
 			minDNFMatrix.push(row);
 		}
+	}
+
+	const [userMinDNFMatrix, setUserMinDNFMatrix] = useState(_.cloneDeep(minDNFMatrix));
+
+	for (let i = 0; i < matrix.length; i++) {
+		let row = [];
+		for (let j = 0; j < matrix[0].length; j++) {
+			if (matrix[i][j][0] === 1 && matrix[i][j][1] === 1 && matrix[i][j][2] === 1 && oneInColumn(j)) {
+
+				if (!coreDNFm.includes(leftSigns2[i])) 
+					coreDNFm.push(leftSigns2[i]);
+			}
+			if (matrix[i][j][1] === 0 && matrix[i][j][2] === 0) {
+				if (!leftSigns3M.includes(leftSigns2[i]))
+					leftSigns3M.push(leftSigns2[i])
+				if (!topSigns3M.includes(topSigns2[j]))
+					topSigns3M.push(topSigns2[j])
+				var el = _.cloneDeep(matrix[i][j]);
+				row.push(el);
+
+			}
+		}
+		if (row.length > 0) {
+			minDNFMatrix2.push(row);
+		}
+	}
+
+	const stateHandler = (h, w) => {
+		let UM = _.cloneDeep(userMinDNFMatrix);
+		if (!UM[h][0][2]) {
+			for (let i = 0; i < UM[h].length; i++) {
+				UM[h][i][2] = 1;
+			}
+		} else if (UM[h][0][2]){
+			for (let i = 0; i < UM[h].length; i++) {
+				UM[h][i][2] = 0;
+			}
+		}
+		setUserMinDNFMatrix(UM);
 	}
 
 	const mapWithBraces = (array) => array.map(element=>`(${element})`);
@@ -87,7 +132,7 @@ const FinalMatrix = ({matrix}) => {
 				}
 
 				if (bestSet === -1) {
-						break;
+					break;
 				}
 
 				selectedSets.push(bestSet);
@@ -100,82 +145,207 @@ const FinalMatrix = ({matrix}) => {
 
 			return selectedSets;
 		}
-		return ''
+		return [];
 	}
 
-	const [colored, setColored] = useState(0);
+	const [rightAnswer, setRightAnswer] = useState(0);
 
-	let coveredArray = setCover(limitedMinDNFMatrix);
-	let mapWithBr = mapWithBraces(coreDNF).join('\\lor \\newline');
+	let mapWithBrUM = mapWithBraces(coreDNF).join('\\lor \\newline');
+	let mapWithBrM = mapWithBraces(coreDNFm).join('\\lor \\newline');
 
-	useEffect ( () => {
-		let getElement1 = document.getElementById('table-wrapper');
-		if (minDNFMatrix.length === 0) {
-			getElement1.style.display = 'none';
-		} else {
-			getElement1.style.display = 'block';
-		}
+	let coveredArray = [];
 
-		let getElement2 = document.getElementById('show-correct-checkbox');
-		if (minDNFMatrix.length === 0) {
-			getElement2.style.display = 'none';
-		} else {
-			getElement2.style.display = 'block';
-		}
+	if (JSON.stringify(matrix) === JSON.stringify(userMatrix))
+		coveredArray = setCover(limitedMinDNFMatrix);
 
-		for (let i = 0; i < coveredArray.length; i++) {
-			let localI = coveredArray[i];
-			for (let j = 0; j < minDNFMatrix[0].length; j++) {
-				let element = document.getElementById(`second-h${localI}w${j}`);
-				if (element.style.backgroundColor!=='rgb(77, 178, 77)' && colored)
-					element.style.backgroundColor = 'rgb(77, 178, 77)';
-				else if (element.style.backgroundColor==='rgb(77, 178, 77)')
-					element.style.backgroundColor = 'transparent';
+	for (let i = 0; i < minDNFMatrix2.length; i++) {
+		if (coveredArray.includes(i)) {
+			for (let j = 0; j < minDNFMatrix2[0].length; j++) {
+				minDNFMatrix2[i][j][2] = 1;
 			}
 		}
-	}, [colored])
+	}
+
+	// покраска строк матрицы готовой
+	useEffect ( () => {
+		if (coveredArray.length!==0) {
+			let getElement1 = document.getElementById('table-wrapper');
+			if (minDNFMatrix.length === 0) {
+				getElement1.style.display = 'none';
+			} else {
+				getElement1.style.display = 'block';
+			}
+
+			let getElement2 = document.getElementById('show-correct-checkbox');
+			if (minDNFMatrix.length === 0) {
+				getElement2.style.display = 'none';
+			} else {
+				getElement2.style.display = 'block';
+			}
+
+			for (let i = 0; i < minDNFMatrix.length; i++) {
+				for (let j = 0; j < minDNFMatrix[0].length; j++) {
+					if (rightAnswer) {
+						let element = document.getElementById(`second-h${i}w${j}`);
+						if (minDNFMatrix2[i][j][2]) {
+							element.style.backgroundColor = 'rgb(77, 178, 77)';
+						} else {
+							element.style.backgroundColor = 'transparent';
+						}
+					} else {
+						let element = document.getElementById(`second-h${i}w${j}`);
+						if (userMinDNFMatrix[i][j][2]) {
+							element.style.backgroundColor = 'rgb(77, 178, 77)';
+						} else {
+							element.style.backgroundColor = 'transparent';
+						}
+					}
+				}
+			}
+
+		}
+	}, [rightAnswer, userMinDNFMatrix])
 
 	let fCore = 'f_{core}';
 	let fMin = 'f_{min}';
-  return (
+	const count = (string, symbol) => {
+		let counter = 0;
+		for (let i = 0; i < string.length; i++) {
+			if (string[i] === symbol) {
+				counter++;
+			}
+		}
+		return counter;
+	}
+
+	let stringIfUserAnswer = '';
+	let complexityOfUsersAnswer = count(mapWithBrUM, 'x');
+
+	let stringIfComputedAnswer = '';
+	let complexityOfComputedAnswer = count(mapWithBrUM, 'x');;
+
+
+
+
+	let emptyMatrixFlag = false;
+
+	if (userMinDNFMatrix.length === 0) {
+		emptyMatrixFlag = true;
+		if (rightAnswer != 1)
+			setRightAnswer(1);
+	}
+
+	let fullyCoveredFlag = true;
+
+	if (userMinDNFMatrix.length !== 0) {
+		for (let i = 0; i < userMinDNFMatrix.length; i++) {
+			if (userMinDNFMatrix[i][0][2]) {
+				stringIfUserAnswer += `(${leftSigns3[i]})`;
+
+				if (i !== (userMinDNFMatrix.length-1))
+					stringIfUserAnswer += '\\lor \\newline';
+				else
+					stringIfUserAnswer += '\\newline';
+
+				complexityOfUsersAnswer += count(leftSigns3[i], "x");
+			}
+		}
+
+		for (let j = 0; j<userMinDNFMatrix[0].length; j++) {
+			let isCovering = false;
+			for (let i = 0; i<userMinDNFMatrix.length; i++) {
+				if (userMinDNFMatrix[i][j][2] && userMinDNFMatrix[i][j][0]) {
+					isCovering = true;
+					break;
+				}
+			}
+			if (!isCovering) {
+				fullyCoveredFlag = false;
+				break;
+			}
+		}
+
+	}
+
+	for (let i = 0; i < minDNFMatrix2.length; i++) {
+		if (minDNFMatrix2[i][0][2]) {
+			stringIfComputedAnswer += `(${leftSigns3[i]})`;
+
+			if (i !== (userMinDNFMatrix.length-1))
+				stringIfComputedAnswer += '\\lor \\newline';
+			else
+				stringIfComputedAnswer += '\\newline';
+
+			complexityOfComputedAnswer += count(leftSigns3[i], "x");
+		}
+	}
+
+    return (
 		<div>
 			<div></div>
 			<br />
-			<h2>Ядровая ДНФ:</h2>
-			<Latex> ${fCore} = {mapWithBr}$</Latex>
-			<br /><br /><br />
+			<h2>Ядровая ДНФ пользователя:</h2>
+			<Latex> ${fCore} = {mapWithBrUM}$</Latex>
+			<br />
+			<br />
 
-			<h1>Матрица из непокрытых областей</h1>
-			<p>Выбери минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
-			<div id='table-wrapper'className='matrix'>
-				<tr>
-					<td className='cell'>&nbsp;</td>
-					{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
-				</tr>
-				{leftSigns3.map((element, index) => {
-					return <tr>
-						<td className='cell'><Latex>${element}$</Latex></td>
-						{minDNFMatrix[index].map((elementMatrix, index2) => {
-							return <td id={"second-h"+String(index) + "w"+index2} className='cell'><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
-						})}
-				</tr>})}
+			<div style={{display: matrixSwitch ? "block" :"none"}}> 
+				<h2>Правильная ядровая ДНФ:</h2>
+				<Latex> ${fCore} = {mapWithBrM}$</Latex>
 			</div>
-			<div id='show-correct-checkbox'>
-				<div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
-					<input type="checkbox" name="" id="show-cor" onClick={()=>{setColored(prev=>!prev)}}/>
-					<label for='show-cor'>Отметить правильные строки</label>
+			<br />
+			{JSON.stringify(matrix) !== JSON.stringify(userMatrix) ?
+			<div className='Error'>
+
+				<b>Вы выбрали не все области на импликантной матрице!</b>
+			</div> :
+			<div>
+
+	
+				<h1>Матрица из непокрытых областей</h1>
+				<p>Выберите минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
+				<div id='table-wrapper'className='matrix'>
+					<tr>
+						<td className='cell'>{emptyMatrixFlag ? 'Пустая матрица' : ' '}</td>
+						{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
+					</tr>
+					{leftSigns3.map((element, index) => {
+						return <tr>
+							<td className='cell'><Latex>${element}$</Latex></td>
+							{userMinDNFMatrix[index].map((elementMatrix, index2) => {
+								return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+							})}
+					</tr>})}
 				</div>
-
+				<br/>
+				<div style={{display:(fullyCoveredFlag ? 'none' :'block')}} className='Warn'>
+					{fullyCoveredFlag ? '' : 'Предупреждение: Вы выбрали не все строки таким образом, чтобы в каждом столбце стоял хотя бы один "⨯"'}
+				</div>
+				<div id='show-correct-checkbox'>
+					<div style={{display:(emptyMatrixFlag ? 'none' :'flex'), flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
+						<input type="checkbox" name="" id="show-cor" onClick={()=>{setRightAnswer(prev=>!prev)}}/>
+						<label for='show-cor'>Отметить подобранные строки</label>
+					</div>
+					
+				</div>
+				<h2>Минимальная ДНФ пользователя:</h2>
+				<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfUserAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfUserAnswer}$</Latex>
+				<p>Сложность ответа пользователя: {complexityOfUsersAnswer}</p>
 				
-			</div>
-			
-			<h2>Минимальная ДНФ:</h2>
-			<Latex>${fMin}= {(mapWithBr.length > 0)? mapWithBr : ''} {(mapWithBr.length > 0 && coveredArray.length > 0 && colored) ? '\\lor \\newline' : ''} {(coveredArray.length > 0 && colored) ? `${coveredArray.map((_e, i)=>`(${leftSigns3[i]})`).join('\\lor \\newline')}` : ''}$</Latex>
+				<p>Сложность подобранного ответа: {rightAnswer ? complexityOfComputedAnswer : "?"}</p>
+				{(rightAnswer) ?
+				(<div>
+					<h2>Найденная автоматически минимальная ДНФ:</h2>
+					<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfComputedAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfComputedAnswer}$</Latex>
+				</div>) : ''
+				}
+			</div>}
 		</div>
 		
-  )
+	)
 }
 
 export default FinalMatrix
 
 //1010111001010100
+//11011101
