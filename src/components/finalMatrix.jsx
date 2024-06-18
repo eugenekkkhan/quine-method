@@ -303,20 +303,30 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 
 	
 				<h1>Матрица из непокрытых областей</h1>
-				<p>Выберите минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
-				<div id='table-wrapper'className='matrix'>
-					<tr>
-						<td className='cell'>{emptyMatrixFlag ? 'Пустая матрица' : ' '}</td>
-						{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
-					</tr>
-					{leftSigns3.map((element, index) => {
-						return <tr>
-							<td className='cell'><Latex>${element}$</Latex></td>
-							{userMinDNFMatrix[index].map((elementMatrix, index2) => {
-								return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
-							})}
-					</tr>})}
-				</div>
+
+				{!emptyMatrixFlag ?
+					<div>
+						<p>Выберите минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
+						<div id='table-wrapper'className='matrix'>
+							<tr>
+								<td className='cell'>{' '}</td>
+								{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
+							</tr>
+							{leftSigns3.map((element, index) => {
+								return <tr>
+									<td className='cell'><Latex>${element}$</Latex></td>
+									{userMinDNFMatrix[index].map((elementMatrix, index2) => {
+										return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+									})}
+							</tr>})}
+						</div>
+					</div>
+
+				:
+					<div>
+						Упрощенная матрица непокрытых областей <b>не существует</b>, так как все области покрыты
+					</div>
+				}	
 				<br/>
 				<div style={{display:(fullyCoveredFlag ? 'none' :'block')}} className='Warn'>
 					{fullyCoveredFlag ? '' : 'Предупреждение: Вы выбрали не все строки таким образом, чтобы в каждом столбце стоял хотя бы один "⨯"'}
