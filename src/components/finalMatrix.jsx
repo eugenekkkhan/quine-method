@@ -231,7 +231,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 
 	if (userMinDNFMatrix.length === 0) {
 		emptyMatrixFlag = true;
-		if (rightAnswer != 1)
+		if (rightAnswer !== 1)
 			setRightAnswer(1);
 	}
 
@@ -242,7 +242,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 			if (userMinDNFMatrix[i][0][2]) {
 				stringIfUserAnswer += `(${leftSigns3[i]})`;
 
-				if (i !== (userMinDNFMatrix.length-1))
+				if (i !== (userMinDNFMatrix.length-2))
 					stringIfUserAnswer += '\\lor \\newline';
 				else
 					stringIfUserAnswer += '\\newline';
@@ -271,7 +271,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 		if (minDNFMatrix2[i][0][2]) {
 			stringIfComputedAnswer += `(${leftSigns3[i]})`;
 
-			if (i !== (userMinDNFMatrix.length-1))
+			if (i !== (minDNFMatrix2.length-2))
 				stringIfComputedAnswer += '\\lor \\newline';
 			else
 				stringIfComputedAnswer += '\\newline';
@@ -348,7 +348,8 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 					{ (complexityOfComputedAnswer === complexityOfUsersAnswer) ? <h2 style={{color: 'rgb(77, 178, 77)'}}> Ваш ответ верный!</h2> : <h2 style={{color: 'darkred'}}> Ваш ответ неверный!</h2>}
 					<h2>Найденная автоматически минимальная ДНФ:</h2>
 					<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfComputedAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfComputedAnswer}$</Latex>
-				</div>) : ''
+				</div>) 
+				: ''
 				}
 			</div>}
 		</div>
