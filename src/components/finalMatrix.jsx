@@ -231,7 +231,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 
 	if (userMinDNFMatrix.length === 0) {
 		emptyMatrixFlag = true;
-		if (rightAnswer != 1)
+		if (rightAnswer !== 1)
 			setRightAnswer(1);
 	}
 
@@ -242,7 +242,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 			if (userMinDNFMatrix[i][0][2]) {
 				stringIfUserAnswer += `(${leftSigns3[i]})`;
 
-				if (i !== (userMinDNFMatrix.length-1))
+				if (i !== (userMinDNFMatrix.length-2))
 					stringIfUserAnswer += '\\lor \\newline';
 				else
 					stringIfUserAnswer += '\\newline';
@@ -271,7 +271,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 		if (minDNFMatrix2[i][0][2]) {
 			stringIfComputedAnswer += `(${leftSigns3[i]})`;
 
-			if (i !== (userMinDNFMatrix.length-1))
+			if (i !== (minDNFMatrix2.length-2))
 				stringIfComputedAnswer += '\\lor \\newline';
 			else
 				stringIfComputedAnswer += '\\newline';
@@ -303,20 +303,30 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 
 	
 				<h1>Матрица из непокрытых областей</h1>
-				<p>Выберите минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
-				<div id='table-wrapper'className='matrix'>
-					<tr>
-						<td className='cell'>{emptyMatrixFlag ? 'Пустая матрица' : ' '}</td>
-						{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
-					</tr>
-					{leftSigns3.map((element, index) => {
-						return <tr>
-							<td className='cell'><Latex>${element}$</Latex></td>
-							{userMinDNFMatrix[index].map((elementMatrix, index2) => {
-								return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
-							})}
-					</tr>})}
-				</div>
+
+				{!emptyMatrixFlag ?
+					<div>
+						<p>Выберите минимальное количество строк так, чтобы в каждом столбце стоял хотя бы один "⨯".</p>
+						<div id='table-wrapper'className='matrix'>
+							<tr>
+								<td className='cell'>{' '}</td>
+								{topSigns3.map(element => <td className='cell'><Latex>${element}$</Latex></td>)}
+							</tr>
+							{leftSigns3.map((element, index) => {
+								return <tr>
+									<td className='cell'><Latex>${element}$</Latex></td>
+									{userMinDNFMatrix[index].map((elementMatrix, index2) => {
+										return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+									})}
+							</tr>})}
+						</div>
+					</div>
+
+				:
+					<div>
+						Упрощенная матрица непокрытых областей <b>не существует</b>, так как все области покрыты
+					</div>
+				}	
 				<br/>
 				<div style={{display:(fullyCoveredFlag ? 'none' :'block')}} className='Warn'>
 					{fullyCoveredFlag ? '' : 'Предупреждение: Вы выбрали не все строки таким образом, чтобы в каждом столбце стоял хотя бы один "⨯"'}
@@ -324,7 +334,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 				<div id='show-correct-checkbox'>
 					<div style={{display:(emptyMatrixFlag ? 'none' :'flex'), flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
 						<input type="checkbox" name="" id="show-cor" onClick={()=>{setRightAnswer(prev=>!prev)}}/>
-						<label for='show-cor'>Отметить подобранные строки</label>
+						<label for='show-cor'>Отметить строки автоматически</label>
 					</div>
 					
 				</div>
@@ -332,12 +342,14 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 				<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfUserAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfUserAnswer}$</Latex>
 				<p>Сложность ответа пользователя: {complexityOfUsersAnswer}</p>
 				
-				<p>Сложность подобранного ответа: {rightAnswer ? complexityOfComputedAnswer : "?"}</p>
+				<p>Сложность правильного ответа: {rightAnswer ? complexityOfComputedAnswer : "?"}</p>
 				{(rightAnswer) ?
 				(<div>
+					{ (complexityOfComputedAnswer === complexityOfUsersAnswer) ? <h2 style={{color: 'rgb(77, 178, 77)'}}> Ваш ответ верный!</h2> : <h2 style={{color: 'darkred'}}> Ваш ответ неверный!</h2>}
 					<h2>Найденная автоматически минимальная ДНФ:</h2>
 					<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfComputedAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfComputedAnswer}$</Latex>
-				</div>) : ''
+				</div>) 
+				: ''
 				}
 			</div>}
 		</div>

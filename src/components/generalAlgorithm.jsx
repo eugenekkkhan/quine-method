@@ -260,8 +260,17 @@ const GeneralAlgorithm = (props) => {
     leftSigns2.push(localStr)
   }
 
+  const [ADNFdisplay, setADNFdisplay] = useState(0);
 
-
+  useEffect(()=>{
+    let ADNF = document.getElementById('adnf-out');
+    if (ADNFdisplay) {
+      ADNF.style.display = 'block';
+    } else {
+      ADNF.style.display = 'none';
+    }
+  },[ADNFdisplay])
+  
   return (
   <context.Provider value={{topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray, value}}>
     <div className='container'>
@@ -290,10 +299,18 @@ const GeneralAlgorithm = (props) => {
                 $f={((outputSDNF(xValuesArrayFOne).length > 0) ? outputSDNF(xValuesArrayFOne) : "0")}$
               </Latex>
             </div>
-
-            <div className='gluing'>Сокращенная ДНФ:</div>
+            <div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'0.5em', gap:'0.5em'}} className='gluing'>
+              <input type="checkbox" name="" id="show-cor2" onClick={()=>{setADNFdisplay(prev=>!prev)}}/>
+              <label for='show-cor2'>
+                Показать правильную сокращенную ДНФ:
+              </label>
+            </div>
             <div className='hidden-2'>Подробнее в справке</div>
-            <Latex>$f={((outputSDNF(postAbbreviatedArray).length > 0) ? outputSDNF(postAbbreviatedArray) : "0")}$</Latex>
+            <div id="adnf-out">
+              <Latex>
+                $f={((outputADNF(postAbbreviatedArray).length > 0) ? outputADNF(postAbbreviatedArray) : "0")}$
+              </Latex>
+            </div>
             <p>{(outputADNF(postAbbreviatedArray).length > 0) ? '' : 'Это и есть минимальная ДНФ'}</p>
 
         </div>
