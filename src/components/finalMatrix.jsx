@@ -324,7 +324,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 				<div id='show-correct-checkbox'>
 					<div style={{display:(emptyMatrixFlag ? 'none' :'flex'), flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
 						<input type="checkbox" name="" id="show-cor" onClick={()=>{setRightAnswer(prev=>!prev)}}/>
-						<label for='show-cor'>Отметить подобранные строки</label>
+						<label for='show-cor'>Отметить строки автоматически</label>
 					</div>
 					
 				</div>
@@ -332,9 +332,10 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 				<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfUserAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfUserAnswer}$</Latex>
 				<p>Сложность ответа пользователя: {complexityOfUsersAnswer}</p>
 				
-				<p>Сложность подобранного ответа: {rightAnswer ? complexityOfComputedAnswer : "?"}</p>
+				<p>Сложность правильного ответа: {rightAnswer ? complexityOfComputedAnswer : "?"}</p>
 				{(rightAnswer) ?
 				(<div>
+					{ (complexityOfComputedAnswer === complexityOfUsersAnswer) ? <h2 style={{color: 'rgb(77, 178, 77)'}}> Ваш ответ верный!</h2> : <h2 style={{color: 'darkred'}}> Ваш ответ неверный!</h2>}
 					<h2>Найденная автоматически минимальная ДНФ:</h2>
 					<Latex>${fMin}= {(mapWithBrUM.length > 0) ? mapWithBrUM : ''} {(stringIfComputedAnswer.length > 0) ? '\\lor \\newline' : ''} {stringIfComputedAnswer}$</Latex>
 				</div>) : ''
