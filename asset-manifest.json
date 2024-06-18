@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/quine-method/static/css/main.e35c874d.css",
-    "main.js": "/quine-method/static/js/main.35436103.js",
+    "main.js": "/quine-method/static/js/main.e9440438.js",
     "static/js/453.4d69dbbc.chunk.js": "/quine-method/static/js/453.4d69dbbc.chunk.js",
     "static/media/KaTeX_AMS-Regular.ttf": "/quine-method/static/media/KaTeX_AMS-Regular.853be92419a6c3766b9a.ttf",
     "static/media/KaTeX_Main-Regular.ttf": "/quine-method/static/media/KaTeX_Main-Regular.9eba1d77abcf2aa6e94e.ttf",
@@ -89,11 +89,11 @@
     "static/media/jetbrains-mono-cyrillic-ext-100-normal.woff2": "/quine-method/static/media/jetbrains-mono-cyrillic-ext-100-normal.9e6fa66704fefcc86efb.woff2",
     "index.html": "/quine-method/index.html",
     "main.e35c874d.css.map": "/quine-method/static/css/main.e35c874d.css.map",
-    "main.35436103.js.map": "/quine-method/static/js/main.35436103.js.map",
+    "main.e9440438.js.map": "/quine-method/static/js/main.e9440438.js.map",
     "453.4d69dbbc.chunk.js.map": "/quine-method/static/js/453.4d69dbbc.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e35c874d.css",
-    "static/js/main.35436103.js"
+    "static/js/main.e9440438.js"
   ]
 }
