@@ -302,7 +302,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 			<div>
 
 	
-				<h1>Матрица из непокрытых областей</h1>
+				<h1>Матрица непокрытых областей:</h1>
 
 				{!emptyMatrixFlag ?
 					<div>

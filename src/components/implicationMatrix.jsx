@@ -276,7 +276,7 @@ const ImplicationMatrix = () => {
       centerButton.className = 'button';
       leftButton.className = 'button left-border';
       rightButton.className = 'button button-pressed right-border';  
-      guideText.textContent = 'Итоговое отображение импликантной таблицы';    
+      guideText.textContent = ' ';    
     }
   },[method, button, matrixSwitch, userMatrix, cleaning]);
 
