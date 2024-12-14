@@ -274,9 +274,9 @@ const GeneralAlgorithm = (props) => {
   return (
   <context.Provider value={{topSigns2, leftSigns2, xValuesArrayFOne, postAbbreviatedArray, value}}>
     <div className='container'>
-      <h1>
+      <h2>
           Таблица истинности:
-      </h1>
+      </h2>
       <div className='flex-2-div'>
         <div className='tablewrapper'>
           <div className='table'>
@@ -300,8 +300,8 @@ const GeneralAlgorithm = (props) => {
               </Latex>
             </div>
             <div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'0.5em', gap:'0.5em'}} className='gluing'>
-              <input type="checkbox" name="" id="show-cor2" onClick={()=>{setADNFdisplay(prev=>!prev)}}/>
-              <label for='show-cor2'>
+              <input type="checkbox" name="" id="show-cor2" style={{cursor: "pointer"}} onClick={()=>{setADNFdisplay(prev=>!prev)}}/>
+              <label for='show-cor2' style={{cursor: "pointer"}}>
                 Показать правильную сокращенную ДНФ:
               </label>
             </div>

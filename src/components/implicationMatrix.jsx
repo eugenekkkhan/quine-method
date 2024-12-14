@@ -382,9 +382,9 @@ const ImplicationMatrix = () => {
 
   return (
       <div className='matrix-outer'>
-        <h1>
+        <h2>
           Импликантная матрица:
-        </h1>
+        </h2>
         <p id='guide'>
 
         </p>
@@ -411,15 +411,15 @@ const ImplicationMatrix = () => {
           return <tr>
             <td className='cell'><Latex>${element}$</Latex></td>
             {userMatrix[index]?.map((elementMatrix, index2) => {
-              return <td id={'h'+String(index) +'w'+index2} className='cell' onClick={()=>{if(!matrixSwitch) {stateHandler(index, index2, method);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+              return <td id={'h'+String(index) +'w'+index2} className='cell' style={{cursor: "pointer"}} onClick={()=>{if(!matrixSwitch) {stateHandler(index, index2, method);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
             })}
           </tr>})}
 
         </div>
         <div style={{display:'flex', flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
-					<input type="checkbox" name="" id="show-cor2" onClick={()=>{setMatrixSwitch(!matrixSwitch);}}/>
-					<label for='show-cor2'>Отметить все строки и столбцы автоматически</label>
-          <button className='button-medium' onClick={()=>{setCleaning(prev=>!prev)}}>Сброс</button>
+					<input type="checkbox" name="" id="show-cor3" style={{cursor: "pointer"}} onClick={()=>{setMatrixSwitch(!matrixSwitch);}}/>
+					<label for='show-cor3' style={{cursor: "pointer"}}>Отметить все строки и столбцы автоматически</label>
+          <button className='button-medium' style={{cursor: "pointer"}} onClick={()=>{setCleaning(prev=>!prev)}}>Сброс</button>
 				</div>
         
         <div>

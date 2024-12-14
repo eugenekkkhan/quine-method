@@ -302,7 +302,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 			<div>
 
 	
-				<h1>Матрица из непокрытых областей</h1>
+				<h2>Матрица из непокрытых областей</h2>
 
 				{!emptyMatrixFlag ?
 					<div>
@@ -316,7 +316,7 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 								return <tr>
 									<td className='cell'><Latex>${element}$</Latex></td>
 									{userMinDNFMatrix[index].map((elementMatrix, index2) => {
-										return <td id={"second-h"+String(index) + "w"+index2} className='cell' onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
+										return <td id={"second-h"+String(index) + "w"+index2} className='cell' style={{cursor: "pointer"}} onClick={()=>{if(!rightAnswer) {stateHandler(index, index2);} }}><Latex>${elementMatrix[0] ? '\\times' : ' '}$</Latex></td>
 									})}
 							</tr>})}
 						</div>
@@ -333,8 +333,8 @@ const FinalMatrix = ({userMatrix, matrixSwitch, matrix}) => {
 				</div>
 				<div id='show-correct-checkbox'>
 					<div style={{display:(emptyMatrixFlag ? 'none' :'flex'), flexWrap:'nowrap', alignItems:'center', paddingTop:'1em', gap:'0.5em'}}>
-						<input type="checkbox" name="" id="show-cor" onClick={()=>{setRightAnswer(prev=>!prev)}}/>
-						<label for='show-cor'>Отметить строки автоматически</label>
+						<input type="checkbox" name="" id="show-cor" style={{cursor: "pointer"}} onClick={()=>{setRightAnswer(prev=>!prev)}}/>
+						<label for='show-cor' style={{cursor: "pointer"}}>Отметить строки автоматически</label>
 					</div>
 					
 				</div>
